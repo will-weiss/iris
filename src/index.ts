@@ -1,8 +1,30 @@
-// Stub that passes first spec regarding comment tags of mustache test suite
+const Hogan = require('hogan.js')
+
+
 export default function iris(template: string) {
+
+  const tokens: HoganToken[] = Hogan.parse(Hogan.scan(template))
+
+  const text = tokens.reduce((text, token) => {
+    switch (token.tag) {
+      case '_t': {
+        return text + String(token.text)
+      }
+      case '\n': {
+        return text + '\n'
+      }
+      case '!': {
+        return text
+      }
+      default: {
+        return text
+      }
+    }
+  }, '')
+
   return `
     function(data, partials) {
-      return document.createTextNode("1234567890")
+      return document.createTextNode(${JSON.stringify(text)})
     }
   `
 }

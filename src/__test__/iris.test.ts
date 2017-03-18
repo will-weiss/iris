@@ -59,7 +59,7 @@ function testSpecAgainstIris({ desc, data, template, expected, partials }: Musta
 
 
 function* specGroups(): IterableIterator<[string, TestSpec]> {
-  yield ['comments', testSpecAgainstHogan]
+  yield ['comments', testSpecAgainstIris]
   yield ['delimiters', testSpecAgainstHogan]
   yield ['interpolation', testSpecAgainstHogan]
   yield ['inverted', testSpecAgainstHogan]
