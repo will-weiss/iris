@@ -1,0 +1,12 @@
+install:
+  - npm install
+
+script:
+  - npm test
+
+notifications:
+  email:
+    recipients:
+      - weiss@maxwellhealth.com
+    on_success: change
+    on_failure: change

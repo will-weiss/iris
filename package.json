@@ -1,0 +1,19 @@
+{
+  "name": "iris",
+  "version": "1.0.0",
+  "description": "Mustache Template Engine to emit DOM elements",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo 'TODO: implement' && exit 0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/will-weiss/iris.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/will-weiss/iris/issues"
+  },
+  "homepage": "https://github.com/will-weiss/iris#readme"
+}
