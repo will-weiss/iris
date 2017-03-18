@@ -18,13 +18,21 @@ type TestSpec = (testCase: MustacheTestCase) => void
 
 
 function testSpecGroup(specGroupName: string, runTest: TestSpec) {
-  const specGroup = require(`../../spec/specs/${specGroupName}`)
+  const specGroupTests = require(`../../spec/specs/${specGroupName}`).tests.map(parseTestCase)
 
   describe(specGroupName, () =>
-    specGroup.tests.forEach((testCase: MustacheTestCase) =>
+    specGroupTests.forEach((testCase: MustacheTestCase) =>
       it(`${testCase.name} - ${testCase.desc}`, () => runTest(testCase))))
 }
 
+
+function parseTestCase(testCase: MustacheTestCase): MustacheTestCase {
+  const { data } = testCase
+  if (!data.lambda) return testCase
+  const func = (new Function ('return ' + data.lambda.js)());
+  const lambda = function() { return func; }
+  return { ...testCase, data: { ...data, lambda } }
+}
 
 function testSpecAgainstHogan({ template, data, partials, expected }: MustacheTestCase) {
   const rendered = Hogan.compile(template).render(data, partials)
