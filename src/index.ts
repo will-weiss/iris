@@ -1,76 +1,31 @@
-const Hogan = require('hogan.js')
+// import Hogan = require('hogan.js')
+import mustacheParser from './mustache-parser'
+import interpreter from './interpreter'
+import compiler from './compiler'
 
-const seen = new Set()
 
-
-function variableText(token: HoganTokenVariable | HoganTokenAmpersand | HoganTokenBrace): string {
-  const keys = token.n.split('.').map(key => JSON.stringify(key))
-
-  const { expr } = keys.reduce((current, key) => {
-    const cursor = `${current.cursor}[${key}]`
-    const expr = `${current.expr} && ${cursor}`
-    return { cursor, expr }
-  }, { cursor: 'data', expr: 'data' })
-
-  return `((${expr}) == null ? "" : (${expr}))`
-}
-
-function sectionText(token: HoganTokenSection): string {
-  return ''
-}
-
-function invertedSectionText(token: HoganTokenInverted): string {
-  return ''
-}
-
-function* texts(tokens: HoganToken[]): IterableIterator<string> {
-  for (const token of tokens) {
-    switch (token.tag) {
-      case '_t': {
-        yield JSON.stringify(String(token.text))
-        break
-      }
-      case '\n': {
-        yield JSON.stringify("\n")
-        break
-      }
-      case '_v': {
-        yield variableText(token)
-        break
-      }
-      case '&': {
-        yield variableText(token)
-        break
-      }
-      case '{': {
-        yield variableText(token)
-        break
-      }
-      case '#': {
-        yield sectionText(token)
-        break
-      }
-      case '^': {
-        yield invertedSectionText(token)
-        break
-      }
+function compilableNode(node: IrisNode): CompilableNode {
+  switch (node.tag) {
+    case 'text': {
+      return { text: node.text, path: null, nodes: null }
+    }
+    case 'variable': {
+      return { variable: { escaped: node.escaped }, path: node.keys.map(key => ({ key })), nodes: null }
+    }
+    case 'section': {
+      return { path: node.keys.map(key => ({ key })), nodes: node.children.map(compilableNode) }
     }
   }
 }
 
-function templateBody(tokens: HoganToken[]): string {
-  return `
-    return document.createTextNode("" + ${Array.from(texts(tokens)).join(' + ')});
-  `
-}
-
-
 export default function iris(template: string) {
-  const tokens: HoganToken[] = Hogan.parse(Hogan.scan(template))
+  const nodes: HoganParsedNode[] = mustacheParser(template)
+  const irisNodes = interpreter(nodes)
 
-  return `
-    function(data, partials) {
-      ${templateBody(tokens)}
-    }
-  `
+  const data: DataToCompile = {
+    cursor: 'cursor',
+    context: 'context',
+    nodes: irisNodes.map(compilableNode),
+  }
+  return compiler(data)
 }

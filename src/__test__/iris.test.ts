@@ -6,6 +6,8 @@ import { jsdom } from 'jsdom'
 import { Script } from 'vm'
 import iris from '../index'
 
+console.log
+
 
 interface MustacheTestCase {
   name: string
@@ -54,7 +56,7 @@ function testSpecAgainstIris({ desc, data, template, expected, partials }: Musta
   script.runInNewContext(context)
 
   // The text is equal to the outerHTML for elements and data for text nodes
-  const text = context.element.outerHTML || context.element.data
+  const text = context.element.outerHTML || context.element.data || context.element.textContent
 
   expect(text).to.equal(expected, desc)
 }
@@ -63,11 +65,11 @@ function testSpecAgainstIris({ desc, data, template, expected, partials }: Musta
 function* specGroups(): IterableIterator<[string, TestSpec]> {
   yield ['comments', testSpecAgainstIris]
   yield ['interpolation', testSpecAgainstIris]
-  // yield ['delimiters', testSpecAgainstHogan]
-  // yield ['inverted', testSpecAgainstHogan]
-  // yield ['partials', testSpecAgainstHogan]
-  // yield ['sections', testSpecAgainstHogan]
-  // yield ['~lambdas', testSpecAgainstHogan]
+  yield ['sections', testSpecAgainstHogan]
+  yield ['delimiters', testSpecAgainstHogan]
+  yield ['inverted', testSpecAgainstHogan]
+  yield ['partials', testSpecAgainstHogan]
+  yield ['~lambdas', testSpecAgainstHogan]
 }
 
 

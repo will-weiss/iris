@@ -1,0 +1,30 @@
+{{#text}}
+  fragment.appendChild(document.createTextNode({{{text}}}));
+
+{{/text}}
+{{^text}}
+  {{cursor}} = {{context}};
+{{/text}}
+{{#path}}
+  {{cursor}} = {{cursor}} && {{cursor}}["{{{key}}}"];
+{{/path}}
+{{#variable}}
+  {{cursor}} = {{cursor}} == null ? "" : "" + {{cursor}};
+  {{#escaped}}
+    {{cursor}} = {{cursor}}.replace("&", "&amp;").replace('"', "&quot;").replace("<", "&lt;").replace(">", "&gt;");
+  {{/escaped}}
+  fragment.appendChild(document.createTextNode({{cursor}}));
+
+{{/variable}}
+{{#nodes.length}}
+  if ({{cursor}}) {
+    (Array.isArray({{cursor}}) ? {{cursor}} : [{{cursor}}]).forEach(function({{cursor}}) {
+      var {{context}} = Object.assign(Object.create(this), {{cursor}});
+
+      {{#nodes}}
+        {{> node}}
+      {{/nodes}}
+    }, {{context}});
+  }
+
+{{/nodes.length}}

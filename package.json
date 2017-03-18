@@ -24,10 +24,13 @@
   },
   "homepage": "https://github.com/will-weiss/iris#readme",
   "dependencies": {
-    "hogan.js": "3.0.2"
+    "hogan.js": "3.0.2",
+    "htmlparser": "1.7.7",
+    "js-beautify": "1.6.11"
   },
   "devDependencies": {
     "@types/chai": "3.4.35",
+    "@types/js-beautify": "0.0.28",
     "@types/jsdom": "2.0.30",
     "@types/lodash.escape": "4.0.1",
     "@types/lodash.unescape": "4.0.1",
