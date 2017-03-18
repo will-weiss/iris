@@ -1,4 +1,6 @@
 const Hogan = require('hogan.js')
+import escape = require('lodash.escape')
+import unescape = require('lodash.unescape')
 import { expect } from 'chai'
 import { jsdom } from 'jsdom'
 import { Script } from 'vm'
@@ -60,12 +62,12 @@ function testSpecAgainstIris({ desc, data, template, expected, partials }: Musta
 
 function* specGroups(): IterableIterator<[string, TestSpec]> {
   yield ['comments', testSpecAgainstIris]
-  yield ['delimiters', testSpecAgainstHogan]
-  yield ['interpolation', testSpecAgainstHogan]
-  yield ['inverted', testSpecAgainstHogan]
-  yield ['partials', testSpecAgainstHogan]
-  yield ['sections', testSpecAgainstHogan]
-  yield ['~lambdas', testSpecAgainstHogan]
+  yield ['interpolation', testSpecAgainstIris]
+  // yield ['delimiters', testSpecAgainstHogan]
+  // yield ['inverted', testSpecAgainstHogan]
+  // yield ['partials', testSpecAgainstHogan]
+  // yield ['sections', testSpecAgainstHogan]
+  // yield ['~lambdas', testSpecAgainstHogan]
 }
 
 
