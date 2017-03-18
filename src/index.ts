@@ -5,3 +5,4 @@ export default function iris(template: string) {
     }
   `
 }
+
