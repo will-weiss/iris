@@ -4,7 +4,14 @@
   "description": "Mustache Template Engine to emit DOM elements",
   "main": "index.js",
   "scripts": {
-    "test": "echo 'TODO: implement' && exit 0"
+    "clear": "rm -rf compiled",
+    "compile": "npm run clear && tsc",
+    "compile:watch": "npm run clear && tsc -w",
+    "cover": "istanbul cover -x '**/*.test.js*' -x '**/entry.js*' _mocha --root compiled --include-all-sources true -- 'compiled/**/*.test.js'",
+    "coverage": "npm run clear && npm run compile && npm run cover && npm run remap",
+    "remap": "remap-istanbul -i coverage/coverage.json -o html-report -t html",
+    "test": "npm run compile && mocha --require source-map-support/register 'compiled/**/*.test.js'",
+    "test:watch": "{ npm run compile:watch &\nmocha --require source-map-support/register 'compiled/**/*.test.js' --watch --watch-extensions js &\nwait\n}"
   },
   "repository": {
     "type": "git",
@@ -15,5 +22,23 @@
   "bugs": {
     "url": "https://github.com/will-weiss/iris/issues"
   },
-  "homepage": "https://github.com/will-weiss/iris#readme"
+  "homepage": "https://github.com/will-weiss/iris#readme",
+  "dependencies": {
+    "hogan.js": "3.0.2"
+  },
+  "devDependencies": {
+    "@types/chai": "3.4.35",
+    "@types/jsdom": "2.0.30",
+    "@types/mocha": "2.2.40",
+    "@types/node": "7.0.8",
+    "@types/sinon": "1.16.35",
+    "chai": "3.5.0",
+    "istanbul": "0.4.5",
+    "jsdom": "9.12.0",
+    "mocha": "3.2.0",
+    "remap-istanbul": "0.9.1",
+    "sinon": "2.0.0",
+    "source-map-support": "0.4.14",
+    "typescript": "2.2.1"
+  }
 }
