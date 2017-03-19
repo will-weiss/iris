@@ -3,11 +3,16 @@
 
 {{/text}}
 {{^text}}
-  {{cursor}} = {{context}};
+  {{^keys.length}}
+    {{cursor}} = {{data}};
+  {{/keys.length}}
+  {{#keys.length}}
+    {{cursor}} = {{context}};
+    {{#keys}}
+      {{cursor}} = {{cursor}} && {{cursor}}["{{{.}}}"];
+    {{/keys}}
+  {{/keys.length}}
 {{/text}}
-{{#path}}
-  {{cursor}} = {{cursor}} && {{cursor}}["{{{key}}}"];
-{{/path}}
 {{#variable}}
   {{cursor}} = {{cursor}} == null ? "" : "" + {{cursor}};
   {{#escaped}}
@@ -18,8 +23,11 @@
 {{/variable}}
 {{#nodes.length}}
   if ({{cursor}}) {
-    (Array.isArray({{cursor}}) ? {{cursor}} : [{{cursor}}]).forEach(function({{cursor}}) {
-      var {{context}} = Object.assign(Object.create(this), {{cursor}});
+    (Array.isArray({{cursor}}) ? {{cursor}} : [{{cursor}}]).forEach(function({{data}}) {
+      var {{cursor}};
+      var {{context}} = (typeof {{data}} === 'object' && {{data}} !== null && !Array.isArray({{data}}))
+        ? Object.assign(Object.create(this), {{data}})
+        : this;
 
       {{#nodes}}
         {{> node}}

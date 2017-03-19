@@ -7,53 +7,42 @@ describe('compiler', () => {
 
   it('compiles an AST to a templatized function', () => {
     const data = {
+      data: 'data',
       cursor: 'cursor',
       context: 'context',
       nodes: [
         {
           text: '"text1"',
-          path: null,
+          keys: null,
           nodes: null,
         },
         {
           variable: {
             escaped: true,
           },
-          path: [
-            { key: 'key1' },
-            { key: 'key2' },
-          ],
+          keys: ['key1', 'key2'],
           nodes: null,
         },
         {
-          path: [
-            { key: 'key3' },
-            { key: 'key4' },
-          ],
+          keys: ['key3', 'key4'],
           nodes: [
             {
               text: '"text2"',
-              path: null,
+              keys: null,
               nodes: null,
             },
             {
               variable: {
                 escaped: false,
               },
-              path: [
-                { key: 'key5' },
-                { key: 'key6' },
-              ],
+              keys: ['key5', 'key6'],
               nodes: null,
             },
             {
               variable: {
                 escaped: false,
               },
-              path: [
-                { key: 'key7' },
-                { key: 'key8' },
-              ],
+              keys: ['key7', 'key8'],
               nodes: null,
             },
           ],
@@ -80,8 +69,11 @@ describe('compiler', () => {
           cursor = cursor && cursor["key3"];
           cursor = cursor && cursor["key4"];
           if (cursor) {
-              (Array.isArray(cursor) ? cursor : [cursor]).forEach(function(cursor) {
-                  var context = Object.assign(Object.create(this), cursor);
+              (Array.isArray(cursor) ? cursor : [cursor]).forEach(function(data) {
+                  var cursor;
+                  var context = (typeof data === 'object' && data !== null && !Array.isArray(data)) ?
+                      Object.assign(Object.create(this), data) :
+                      this;
 
                   fragment.appendChild(document.createTextNode("text2"));
 

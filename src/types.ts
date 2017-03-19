@@ -53,11 +53,12 @@ type TerminatingNode = {
 type IrisNode = TextIrisNode | VariableIrisNode | SectionIrisNode
 
 type CompilableNode =
-  { text: string, path: null, nodes: null } |
-  { variable: { escaped: boolean }, path: { key: string }[], nodes: null } |
-  { path: { key: string }[], nodes: CompilableNode[] }
+  { text: string, keys: null, nodes: null } |
+  { variable: { escaped: boolean }, keys: string[], nodes: null } |
+  { keys: string[], nodes: CompilableNode[] }
 
 type DataToCompile = {
+  data: string
   cursor: string
   context: string
   nodes: CompilableNode[]

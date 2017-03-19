@@ -6,8 +6,6 @@ import { jsdom } from 'jsdom'
 import { Script } from 'vm'
 import iris from '../index'
 
-console.log
-
 
 interface MustacheTestCase {
   name: string
@@ -65,7 +63,7 @@ function testSpecAgainstIris({ desc, data, template, expected, partials }: Musta
 function* specGroups(): IterableIterator<[string, TestSpec]> {
   yield ['comments', testSpecAgainstIris]
   yield ['interpolation', testSpecAgainstIris]
-  yield ['sections', testSpecAgainstHogan]
+  yield ['sections', testSpecAgainstIris]
   yield ['delimiters', testSpecAgainstHogan]
   yield ['inverted', testSpecAgainstHogan]
   yield ['partials', testSpecAgainstHogan]

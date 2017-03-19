@@ -1,3 +1,6 @@
+const keys = (str: string) => str === '.' ? [] : str.split('.')
+
+
 function* interpretNodes(nodes: HoganParsedNode[]): IterableIterator<IrisNode> {
   let text: string = ''
 
@@ -22,13 +25,13 @@ function* interpretNodes(nodes: HoganParsedNode[]): IterableIterator<IrisNode> {
 
       case '#': case '^': case '$': case '<': case '>': {
         yieldText = true
-        irisNode = { tag: 'section', keys: node.n.split('.'), inverted: (node.tag !== '#'), children: Array.from(interpretNodes(node.nodes)) }
+        irisNode = { tag: 'section', keys: keys(node.n), inverted: (node.tag !== '#'), children: Array.from(interpretNodes(node.nodes)) }
         break
       }
 
       case '&': case '{': case '_v': {
         yieldText = true
-        irisNode = { tag: 'variable', keys: node.n.split('.'), escaped: (node.tag === '_v') }
+        irisNode = { tag: 'variable', keys: keys(node.n), escaped: (node.tag === '_v') }
         break
       }
 
