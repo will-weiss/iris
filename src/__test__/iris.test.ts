@@ -4,7 +4,7 @@ import unescape = require('lodash.unescape')
 import { expect } from 'chai'
 import { jsdom } from 'jsdom'
 import { Script } from 'vm'
-import iris from '../index'
+import iris, { irisToString } from '../index'
 
 
 interface MustacheTestCase {
@@ -44,12 +44,12 @@ function testSpecAgainstHogan({ desc, data, template, expected, partials }: Must
 
 
 function testSpecAgainstIris({ desc, data, template, expected, partials }: MustacheTestCase) {
-  const templatizedFunction = iris(template)
+  const templatizedFunction = iris(template, partials)
 
   const { document } = jsdom('<html><body></body></html>').defaultView
 
-  const script = new Script(`element = (${templatizedFunction})(data, partials)`)
-  const context: any = { document, data, partials }
+  const script = new Script(`element = (${templatizedFunction})(data)`)
+  const context: any = { document, data }
 
   script.runInNewContext(context)
 
@@ -59,13 +59,21 @@ function testSpecAgainstIris({ desc, data, template, expected, partials }: Musta
   expect(text).to.equal(expected, desc)
 }
 
+function testSpecAgainstIrisToString({ desc, data, template, expected, partials }: MustacheTestCase) {
+  const templatizedFunction = irisToString(template, partials)
+  const script = new Script(`result = (${templatizedFunction})(data)`)
+  const context: any = { data }
+  script.runInNewContext(context)
+  expect(context.result).to.equal(expected, desc)
+}
+
 
 function* specGroups(): IterableIterator<[string, TestSpec]> {
-  yield ['comments', testSpecAgainstIris]
-  yield ['interpolation', testSpecAgainstIris]
-  yield ['sections', testSpecAgainstIris]
-  yield ['inverted', testSpecAgainstIris]
-  yield ['delimiters', testSpecAgainstIris]
+  yield ['comments', testSpecAgainstIrisToString]
+  yield ['interpolation', testSpecAgainstIrisToString]
+  yield ['sections', testSpecAgainstIrisToString]
+  yield ['inverted', testSpecAgainstIrisToString]
+  // yield ['delimiters', testSpecAgainstIris]
   // yield ['partials', testSpecAgainstHogan]
   // yield ['~lambdas', testSpecAgainstHogan]
 }

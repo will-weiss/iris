@@ -1,11 +1,11 @@
-function(data, partials) {
+function{{#name}} {{{name}}}{{/name}}(data) {
   var cursor;
   var context = data;
-  var fragment = document.createDocumentFragment();
+  var result = {{{initialResultExpr}}};
 
   {{#nodes}}
     {{> node}}
   {{/nodes}}
 
-  return fragment;
+  return result;
 }

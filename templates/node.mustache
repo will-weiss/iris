@@ -1,48 +1,36 @@
 {{#text}}
-  fragment.appendChild(document.createTextNode({{{text}}}));
-
+  {{{addToResultLeft}}}{{{text}}}{{{addToResultRight}}};
 {{/text}}
 {{^text}}
-  {{^keys}}
-    cursor = data;
+  cursor = {{#keys.length}}context{{/keys.length}}{{^keys.length}}data{{/keys.length}};
+  {{#keys}}
+    cursor = cursor && cursor["{{{.}}}"];
   {{/keys}}
-  {{#keys.length}}
-    cursor = context;
-    {{#keys}}
-      cursor = cursor && cursor["{{{.}}}"];
-    {{/keys}}
-  {{/keys.length}}
-  {{#variable}}
-    cursor = cursor == null ? "" : "" + cursor;
-    {{#escaped}}
-      cursor = cursor.replace("&", "&amp;").replace('"', "&quot;").replace("<", "&lt;").replace(">", "&gt;");
-    {{/escaped}}
-    fragment.appendChild(document.createTextNode(cursor));
-
-  {{/variable}}
-  {{^variable}}
-    {{#section}}
-      {{^inverted}}
-        if (cursor) {
-          (Array.isArray(cursor) ? cursor : [cursor]).forEach(function(data) {
-            var cursor;
-            var context = (typeof data === 'object' && data !== null && !Array.isArray(data))
-              ? Object.assign(Object.create(this), data)
-              : this;
-
-            {{#nodes}}
-              {{> node}}
-            {{/nodes}}
-          }, context);
-        }
-      {{/inverted}}
-      {{#inverted}}
-        if (!cursor || cursor.length === 0) {
-          {{#nodes}}
-            {{> node}}
-          {{/nodes}}
-        }
-      {{/inverted}}
-    {{/section}}
-  {{/variable}}
 {{/text}}
+{{#variable}}
+  cursor = cursor == null ? "" : "" + cursor;
+  {{#escaped}}
+    cursor = cursor.replace("&", "&amp;").replace('"', "&quot;").replace("<", "&lt;").replace(">", "&gt;");
+  {{/escaped}}
+  {{{addToResultLeft}}}cursor{{{addToResultRight}}};
+{{/variable}}
+{{#section}}
+  {{^inverted}}
+    if (cursor) {
+      (Array.isArray(cursor) ? cursor : [cursor]).forEach(function(data) {
+        var cursor;
+        var context = data && typeof data === 'object' ? Object.assign(Object.create(this), data) : this;
+        {{#nodes}}
+          {{> node}}
+        {{/nodes}}
+      }, context);
+    }
+  {{/inverted}}
+  {{#inverted}}
+    if (!cursor || cursor.length === 0) {
+      {{#nodes}}
+        {{> node}}
+      {{/nodes}}
+    }
+  {{/inverted}}
+{{/section}}

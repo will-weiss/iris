@@ -1,3 +1,5 @@
+type Falsy = false | 0 | '' | null | undefined
+
 type HoganParsedNodes = {
   '#': { tag: '#', n: string, otag: string, ctag: string, i: number, end: number, nodes: HoganParsedNode[] }
   '^': { tag: '^', n: string, otag: string, ctag: string, i: number, end: number, nodes: HoganParsedNode[] }
@@ -26,22 +28,24 @@ type HoganParsedNonCommentNode =
 
 type HoganParsedNode = HoganParsedNonCommentNode | HoganParsedNodes['!']
 
-interface AnyIrisNode {
+interface IrisAnyNode {
+  tag: null | 'text' | 'partial' | 'variable' | 'section'
   text: null | string
+  partial: null | string
   keys: null | string[]
   variable: null | { escaped: boolean }
   section: null | { inverted: boolean, nodes: IrisNode[] }
 }
 
-// type IrisNode =
-//   (AnyIrisNode & { text: string }) |
-//   (AnyIrisNode & { keys: string[], variable: { escaped: boolean } }) |
-//   (AnyIrisNode & { keys: string[], section: { inverted: boolean, nodes: IrisNode[] } })
-
+type IrisTextNode = IrisAnyNode & { tag: 'text', text: string }
+type IrisPartialNode = IrisAnyNode & { tag: 'partial', partial: string }
+type IrisVariableNode = IrisAnyNode & { tag: 'variable', variable: { escaped: boolean } }
+type IrisSectionNode = IrisAnyNode & { tag: 'section', section: { inverted: boolean, nodes: IrisNode[] } }
 
 type IrisNode =
-  { text: string } |
-  { keys: string[], variable: { escaped: boolean } } |
-  { keys: string[], section: { inverted: boolean, nodes: IrisNode[] } }
+  IrisTextNode |
+  IrisPartialNode |
+  IrisVariableNode |
+  IrisSectionNode
 
 type DataToCompile = IrisNode[]

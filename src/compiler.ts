@@ -11,5 +11,21 @@ const partials = {
 }
 
 export default function compiler(nodes: DataToCompile): string {
-  return beautify(partials.function.render({ nodes }, partials))
+  const data = {
+    nodes,
+    initialResultExpr: 'document.createDocumentFragment()',
+    addToResultLeft: 'result.appendChild(document.createTextNode(',
+    addToResultRight: '))',
+  }
+  return beautify(partials.function.render(data, partials))
+}
+
+export function compileToString(nodes: DataToCompile): string {
+  const data = {
+    nodes,
+    initialResultExpr: '""',
+    addToResultLeft: 'result +=',
+    addToResultRight: ''
+  }
+  return partials.function.render(data, partials)
 }
