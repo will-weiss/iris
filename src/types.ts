@@ -48,4 +48,8 @@ type IrisNode =
   IrisVariableNode |
   IrisSectionNode
 
-type DataToCompile = IrisNode[]
+type IrisCompilerOpts = {
+  initialResultExpr: string
+  addToResultLeft: string
+  addToResultRight: string
+}

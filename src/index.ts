@@ -1,21 +1,20 @@
 import mustacheParser from './mustache-parser'
 import interpreter from './interpreter'
-import compiler, { compileToString } from './compiler'
+import { compileToDOM, compileToString } from './compiler'
+import beautify = require('js-beautify')
 
 
 type Partials = {
   [name: string]: string
 }
 
-
-export default function iris(template: string, partials: Partials = {}) {
+const doTheThing = (compiler: Function, postProcess: Function) => (template: string, partials: Partials = {}) => {
   const nodes: HoganParsedNode[] = mustacheParser(template)
   const irisNodes = interpreter(nodes)
-  return compiler(irisNodes)
+  return postProcess(compiler(irisNodes))
 }
 
-export function irisToString(template: string, partials: Partials = {}) {
-  const nodes: HoganParsedNode[] = mustacheParser(template)
-  const irisNodes = interpreter(nodes)
-  return compileToString(irisNodes)
-}
+
+export default doTheThing(compileToDOM, beautify)
+
+export const irisToString = doTheThing(compileToString, (x: any) => x)

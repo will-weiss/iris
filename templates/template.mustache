@@ -1,0 +1,13 @@
+{{#partials.length}}
+  (function() {
+    return {{> function}};
+
+    {{#partials}}
+      {{> function}}
+
+    {{/partials}}
+  })();
+{{/partials.length}}
+{{^partials.length}}
+  {{> function}}
+{{/partials.length}}

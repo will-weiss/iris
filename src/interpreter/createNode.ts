@@ -1,7 +1,6 @@
 const setProto = Object.setPrototypeOf
 
-const irisNodeProto: IrisAnyNode = { tag: null, text: null, partial: null, keys: null, variable: null, section: null }
-
+const irisNodeProto = { tag: null, text: null, partial: null, keys: null, variable: null, section: null }
 const textNodeProto = setProto({ tag: 'text' }, irisNodeProto)
 const partialNodeProto = setProto({ tag: 'partial' }, irisNodeProto)
 const variableNodeProto = setProto({ tag: 'variable' }, irisNodeProto)
