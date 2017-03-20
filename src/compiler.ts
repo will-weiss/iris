@@ -10,6 +10,6 @@ const partials = {
   node: Hogan.compile(nodeTemplate),
 }
 
-export default function compiler(data: DataToCompile): string {
-  return beautify(partials.function.render(data, partials))
+export default function compiler(nodes: DataToCompile): string {
+  return beautify(partials.function.render({ nodes }, partials))
 }

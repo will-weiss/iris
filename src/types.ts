@@ -26,40 +26,22 @@ type HoganParsedNonCommentNode =
 
 type HoganParsedNode = HoganParsedNonCommentNode | HoganParsedNodes['!']
 
-
-type TextIrisNode = {
-  tag: 'text'
-  text: string
+interface AnyIrisNode {
+  text: null | string
+  keys: null | string[]
+  variable: null | { escaped: boolean }
+  section: null | { inverted: boolean, nodes: IrisNode[] }
 }
 
-type VariableIrisNode = {
-  tag: 'variable'
-  keys: string[]
-  escaped: boolean
-}
-
-type SectionIrisNode = {
-  tag: 'section'
-  keys: string[]
-  inverted: boolean
-  children: IrisNode[]
-}
-
-type TerminatingNode = {
-  tag: null
-}
+// type IrisNode =
+//   (AnyIrisNode & { text: string }) |
+//   (AnyIrisNode & { keys: string[], variable: { escaped: boolean } }) |
+//   (AnyIrisNode & { keys: string[], section: { inverted: boolean, nodes: IrisNode[] } })
 
 
-type IrisNode = TextIrisNode | VariableIrisNode | SectionIrisNode
+type IrisNode =
+  { text: string } |
+  { keys: string[], variable: { escaped: boolean } } |
+  { keys: string[], section: { inverted: boolean, nodes: IrisNode[] } }
 
-type CompilableNode =
-  { text: string, keys: null, nodes: null } |
-  { variable: { escaped: boolean }, keys: string[], nodes: null } |
-  { keys: string[], nodes: CompilableNode[] }
-
-type DataToCompile = {
-  data: string
-  cursor: string
-  context: string
-  nodes: CompilableNode[]
-}
+type DataToCompile = IrisNode[]

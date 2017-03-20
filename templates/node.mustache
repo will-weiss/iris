@@ -3,36 +3,46 @@
 
 {{/text}}
 {{^text}}
-  {{^keys.length}}
-    {{cursor}} = {{data}};
-  {{/keys.length}}
+  {{^keys}}
+    cursor = data;
+  {{/keys}}
   {{#keys.length}}
-    {{cursor}} = {{context}};
+    cursor = context;
     {{#keys}}
-      {{cursor}} = {{cursor}} && {{cursor}}["{{{.}}}"];
+      cursor = cursor && cursor["{{{.}}}"];
     {{/keys}}
   {{/keys.length}}
+  {{#variable}}
+    cursor = cursor == null ? "" : "" + cursor;
+    {{#escaped}}
+      cursor = cursor.replace("&", "&amp;").replace('"', "&quot;").replace("<", "&lt;").replace(">", "&gt;");
+    {{/escaped}}
+    fragment.appendChild(document.createTextNode(cursor));
+
+  {{/variable}}
+  {{^variable}}
+    {{#section}}
+      {{^inverted}}
+        if (cursor) {
+          (Array.isArray(cursor) ? cursor : [cursor]).forEach(function(data) {
+            var cursor;
+            var context = (typeof data === 'object' && data !== null && !Array.isArray(data))
+              ? Object.assign(Object.create(this), data)
+              : this;
+
+            {{#nodes}}
+              {{> node}}
+            {{/nodes}}
+          }, context);
+        }
+      {{/inverted}}
+      {{#inverted}}
+        if (!cursor || cursor.length === 0) {
+          {{#nodes}}
+            {{> node}}
+          {{/nodes}}
+        }
+      {{/inverted}}
+    {{/section}}
+  {{/variable}}
 {{/text}}
-{{#variable}}
-  {{cursor}} = {{cursor}} == null ? "" : "" + {{cursor}};
-  {{#escaped}}
-    {{cursor}} = {{cursor}}.replace("&", "&amp;").replace('"', "&quot;").replace("<", "&lt;").replace(">", "&gt;");
-  {{/escaped}}
-  fragment.appendChild(document.createTextNode({{cursor}}));
-
-{{/variable}}
-{{#nodes.length}}
-  if ({{cursor}}) {
-    (Array.isArray({{cursor}}) ? {{cursor}} : [{{cursor}}]).forEach(function({{data}}) {
-      var {{cursor}};
-      var {{context}} = (typeof {{data}} === 'object' && {{data}} !== null && !Array.isArray({{data}}))
-        ? Object.assign(Object.create(this), {{data}})
-        : this;
-
-      {{#nodes}}
-        {{> node}}
-      {{/nodes}}
-    }, {{context}});
-  }
-
-{{/nodes.length}}

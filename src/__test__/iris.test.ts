@@ -64,10 +64,10 @@ function* specGroups(): IterableIterator<[string, TestSpec]> {
   yield ['comments', testSpecAgainstIris]
   yield ['interpolation', testSpecAgainstIris]
   yield ['sections', testSpecAgainstIris]
-  yield ['delimiters', testSpecAgainstHogan]
-  yield ['inverted', testSpecAgainstHogan]
-  yield ['partials', testSpecAgainstHogan]
-  yield ['~lambdas', testSpecAgainstHogan]
+  yield ['inverted', testSpecAgainstIris]
+  yield ['delimiters', testSpecAgainstIris]
+  // yield ['partials', testSpecAgainstHogan]
+  // yield ['~lambdas', testSpecAgainstHogan]
 }
 
 

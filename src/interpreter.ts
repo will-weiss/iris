@@ -1,37 +1,41 @@
 const keys = (str: string) => str === '.' ? [] : str.split('.')
 
+const textTag = (text: string) =>
+  ({ text: JSON.stringify(text) })
 
-function* interpretNodes(nodes: HoganParsedNode[]): IterableIterator<IrisNode> {
+
+function* irisNodes(nodes: HoganParsedNode[]): IterableIterator<IrisNode> {
   let text: string = ''
 
-  const nullTerminatedNodes: (HoganParsedNode | TerminatingNode)[] =
-    (nodes as any).concat([{ tag: null }])
-
-  for (const node of nullTerminatedNodes) {
-
-    let yieldText: boolean = false
-    let irisNode: IrisNode | undefined
-
+  for (const node of nodes) {
     switch (node.tag) {
-
-      case null: {
-        yieldText = true
-        break
-      }
-
-      case '!': {
-        break
-      }
-
       case '#': case '^': case '$': case '<': case '>': {
-        yieldText = true
-        irisNode = { tag: 'section', keys: keys(node.n), inverted: (node.tag !== '#'), children: Array.from(interpretNodes(node.nodes)) }
+
+        if (text) {
+          yield textTag(text)
+          text = ''
+        }
+
+        yield {
+          keys: keys(node.n),
+          section: {
+            inverted: (node.tag !== '#'),
+            nodes: interpreter(node.nodes)
+          }
+        }
         break
       }
 
       case '&': case '{': case '_v': {
-        yieldText = true
-        irisNode = { tag: 'variable', keys: keys(node.n), escaped: (node.tag === '_v') }
+        if (text) {
+          yield textTag(text)
+          text = ''
+        }
+
+        yield {
+          keys: keys(node.n),
+          variable: { escaped: (node.tag === '_v') },
+        }
         break
       }
 
@@ -45,19 +49,14 @@ function* interpretNodes(nodes: HoganParsedNode[]): IterableIterator<IrisNode> {
         break
       }
     }
+  }
 
-    if (yieldText && text) {
-      yield { tag: 'text', text: JSON.stringify(text) }
-      text = ''
-    }
-
-    if (irisNode) {
-      yield irisNode
-    }
+  if (text) {
+    yield textTag(text)
   }
 }
 
 
 export default function interpreter(nodes: HoganParsedNode[]): IrisNode[] {
-  return Array.from(interpretNodes(nodes))
+  return Array.from(irisNodes(nodes))
 }
