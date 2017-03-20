@@ -6,6 +6,6 @@ export const asDOM: IrisCompilerOpts = {
 
 export const asString: IrisCompilerOpts = {
   initialResultExpr: '""',
-  addToResultLeft: 'result +=',
+  addToResultLeft: 'result += ',
   addToResultRight: '',
 }

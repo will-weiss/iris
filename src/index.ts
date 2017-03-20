@@ -1,3 +1,4 @@
+import mapValues = require('lodash.mapvalues')
 import mustacheParser from './mustache-parser'
 import interpreter from './interpreter'
 import { compileToDOM, compileToString } from './compiler'
@@ -8,13 +9,35 @@ type Partials = {
   [name: string]: string
 }
 
-const doTheThing = (compiler: Function, postProcess: Function) => (template: string, partials: Partials = {}) => {
-  const nodes: HoganParsedNode[] = mustacheParser(template)
-  const irisNodes = interpreter(nodes)
-  return postProcess(compiler(irisNodes))
+function parse(template: string): IrisNode[] {
+  return interpreter(mustacheParser(template))
 }
 
 
-export default doTheThing(compileToDOM, beautify)
+export default function iris(template: string, partials: Partials = {}) {
+  const nodes = parse(template)
 
-export const irisToString = doTheThing(compileToString, (x: any) => x)
+  const parsedPartials = mapValues(partials, (template, name) => ({
+    name,
+    nodes: parse(template)
+  }))
+
+  return beautify(compileToDOM(nodes, parsedPartials))
+}
+
+
+export function irisToString(template: string, partials: Partials = {}) {
+  const nodes = parse(template)
+
+  const parsedPartials = Object.keys(partials).map(name => ({
+    name,
+    nodes: parse(partials[name])
+  }))
+
+  if (parsedPartials.length) {
+    console.log(parsedPartials)
+    console.log(compileToString(nodes, parsedPartials))
+  }
+
+  return compileToString(nodes, parsedPartials)
+}
