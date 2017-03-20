@@ -35,5 +35,6 @@
   {{/inverted}}
 {{/section}}
 {{#partial}}
-  {{{addToResultLeft}}}{{{partial}}}(cursor){{{addToResultRight}}};
+  cursor = typeof {{{partial}}} === "function" ? {{{partial}}}(cursor) : "";
+  {{{addToResultLeft}}}cursor{{{addToResultRight}}};
 {{/partial}}
