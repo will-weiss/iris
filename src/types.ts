@@ -5,7 +5,7 @@ type HoganParsedNodes = {
   '^': { tag: '^', n: string, otag: string, ctag: string, i: number, end: number, nodes: HoganParsedNode[] }
   '$': { tag: '$', n: string, otag: string, ctag: string, i: number, end: number, nodes: HoganParsedNode[] }
   '<': { tag: '<', n: string, otag: string, ctag: string, i: number, end: number, nodes: HoganParsedNode[] }
-  '>': { tag: '>', n: string, otag: string, ctag: string, i: number, end: number, nodes: HoganParsedNode[] }
+  '>': { tag: '>', n: string, otag: string, ctag: string, i: number, end: number, nodes: HoganParsedNode[], indent: string }
   '_v': { tag: '_v', n: string, otag: string, ctag: string, i: number }
   '{': { tag: '{', n: string, otag: string, ctag: string, i: number }
   '&': { tag: '&', n: string, otag: string, ctag: string, i: number }
@@ -29,16 +29,15 @@ type HoganParsedNonCommentNode =
 type HoganParsedNode = HoganParsedNonCommentNode | HoganParsedNodes['!']
 
 interface IrisAnyNode {
-  tag: null | 'text' | 'partial' | 'variable' | 'section'
   text: null | string
-  partial: null | string
+  partial: null | { name: string, indentation: string }
   keys: null | string[]
   variable: null | { escaped: boolean }
   section: null | { inverted: boolean, nodes: IrisNode[] }
 }
 
 type IrisTextNode = IrisAnyNode & { tag: 'text', text: string }
-type IrisPartialNode = IrisAnyNode & { tag: 'partial', partial: string }
+type IrisPartialNode = IrisAnyNode & { tag: 'partial', partial: { name: string, indentation: string } }
 type IrisVariableNode = IrisAnyNode & { tag: 'variable', variable: { escaped: boolean } }
 type IrisSectionNode = IrisAnyNode & { tag: 'section', section: { inverted: boolean, nodes: IrisNode[] } }
 

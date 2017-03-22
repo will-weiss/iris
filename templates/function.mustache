@@ -1,11 +1,10 @@
+{{! }}
 function{{#name}} {{{name}}}{{/name}}(data) {
   var cursor;
   var context = data;
   var result = {{{initialResultExpr}}};
 
-  {{#nodes}}
-    {{> node}}
-  {{/nodes}}
+  {{#nodes}}{{> node}}{{/nodes}}
 
   return result;
 }

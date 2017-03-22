@@ -1,5 +1,5 @@
 {{#text}}
-  {{{addToResultLeft}}}{{{text}}}{{{addToResultRight}}};
+  cursor = {{{text}}};
 {{/text}}
 {{^text}}
   cursor = {{#keys.length}}context{{/keys.length}}{{^keys.length}}data{{/keys.length}};
@@ -12,8 +12,17 @@
   {{#escaped}}
     cursor = cursor.replace("&", "&amp;").replace('"', "&quot;").replace("<", "&lt;").replace(">", "&gt;");
   {{/escaped}}
-  {{{addToResultLeft}}}cursor{{{addToResultRight}}};
 {{/variable}}
+{{#partial}}
+  cursor = typeof {{{name}}} !== "function"
+    ? ""
+    : {{{name}}}(cursor).split("\n").map(function(s) {
+        return "{{{indentation}}}" + s;
+      }).join("\n");
+{{/partial}}
+{{^section}}
+  {{{addToResultLeft}}}cursor{{{addToResultRight}}};
+{{/section}}
 {{#section}}
   {{^inverted}}
     if (cursor) {
@@ -34,7 +43,3 @@
     }
   {{/inverted}}
 {{/section}}
-{{#partial}}
-  cursor = typeof {{{partial}}} === "function" ? {{{partial}}}(cursor) : "";
-  {{{addToResultLeft}}}cursor{{{addToResultRight}}};
-{{/partial}}
