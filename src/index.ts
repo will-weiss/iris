@@ -14,16 +14,17 @@ function parse(template: string): IrisNode[] {
 }
 
 
-// export default function iris(template: string, partials: Partials = {}) {
-//   const nodes = parse(template)
+export function irisToDOM(template: string, partials: Partials = {}) {
+  const nodes = parse(template)
 
-//   const parsedPartials = mapValues(partials, (template, name) => ({
-//     name,
-//     nodes: parse(template)
-//   }))
+  const parsedPartials = Object.keys(partials).map(name => ({
+    nodes: parse(partials[name]),
+    ofPartial: { name },
+    partials: null,
+  }))
 
-//   return beautify(compileToDOM(nodes, parsedPartials))
-// }
+  return beautify(compileToDOM({ nodes, ofPartial: null, partials: parsedPartials }), { preserve_newlines: false })
+}
 
 
 export function irisToString(template: string, partials: Partials = {}) {
