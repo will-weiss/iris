@@ -1,47 +1,57 @@
-{{! Set cursor based on the node type }}
-
-cursor =
-
-  {{#linestart}}
-    indentation
-  {{/linestart}}
-
-  {{#text}}
-    {{{text}}}
-  {{/text}}
-
-  {{#newline}}
-    "\n"
-  {{/newline}}
-
-  {{#partial}}
-    typeof {{{name}}} !== "function"
-      ? ""
-      : {{{name}}}(data, "{{{indentation}}}")
-  {{/partial}}
-
-  {{#path}}
+{{! Variable and section nodes use a path to traverse the given context to reach a given value }}
+{{! If there are no keys to traverse, set the cursor to be equal to the provided data }}
+{{! If there are keys to traverse, start at the initial context and traverse the provided keys }}
+{{#path}}
+  cursor =
     {{^keys}}
       data
     {{/keys}}
     {{#keys.length}}
       context
+      {{#keys}}
+        , cursor = cursor && cursor["{{{.}}}"]
+      {{/keys}}
     {{/keys.length}}
-    {{#keys}}
-      , cursor = cursor && cursor["{{{.}}}"]
-    {{/keys}}
-    {{#variable}}
-      , cursor = cursor == null ? "" : "" + cursor
-      {{#escaped}}
-        , cursor = cursor.replace("&", "&amp;").replace('"', "&quot;").replace("<", "&lt;").replace(">", "&gt;")
-      {{/escaped}}
-    {{/variable}}
-  {{/path}}
-;
+  ;
+{{/path}}
 
-{{! Use cursor}}
+{{! For non-section nodes, add to the result in a manner determined by the type of node }}
 {{^section}}
-  {{{addToResultLeft}}}cursor{{{addToResultRight}}};
+
+  {{{addToResultLeft}}}
+
+    {{! For linestart nodes, add the indentation level }}
+    {{#linestart}}
+      indentation
+    {{/linestart}}
+
+    {{! For newline nodes, add a newline }}
+    {{#newline}}
+      "\n"
+    {{/newline}}
+
+    {{! For text nodes, add the text value of the node }}
+    {{#text}}
+      {{{text}}}
+    {{/text}}
+
+    {{! For variable nodes, add the value of the cursor, optionally escaped }}
+    {{#variable}}
+      cursor == null
+        ? ""
+        : ("" + cursor){{#escaped}}
+            .replace("&", "&amp;").replace('"', "&quot;").replace("<", "&lt;").replace(">", "&gt;")
+          {{/escaped}}
+    {{/variable}}
+
+    {{! For partial nodes, add the value of the cursor, optionally escaped }}
+    {{#partial}}
+      typeof {{{name}}} !== "function"
+        ? ""
+        : {{{name}}}(data, "{{{indentation}}}")
+    {{/partial}}
+
+  {{{addToResultRight}}};
 {{/section}}
 
 {{#section}}
