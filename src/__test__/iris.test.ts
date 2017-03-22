@@ -4,7 +4,7 @@ import unescape = require('lodash.unescape')
 import { expect } from 'chai'
 import { jsdom } from 'jsdom'
 import { Script } from 'vm'
-import iris, { irisToString } from '../index'
+import { irisToString } from '../index'
 
 
 interface MustacheTestCase {
@@ -33,24 +33,25 @@ function testSpecAgainstHogan({ desc, data, template, expected, partials }: Must
 }
 
 
-function testSpecAgainstIris({ desc, data, template, expected, partials }: MustacheTestCase) {
-  const templatizedFunction = iris(template, partials)
+// function testSpecAgainstIris({ desc, data, template, expected, partials }: MustacheTestCase) {
+//   const templatizedFunction = iris(template, partials)
 
-  const { document } = jsdom('<html><body></body></html>').defaultView
+//   const { document } = jsdom('<html><body></body></html>').defaultView
 
-  const script = new Script(`element = (${templatizedFunction})(data)`)
-  const context: any = { document, data }
+//   const script = new Script(`element = (${templatizedFunction})(data)`)
+//   const context: any = { document, data }
 
-  script.runInNewContext(context)
+//   script.runInNewContext(context)
 
-  // The text is equal to the outerHTML for elements and data for text nodes
-  const text = context.element.outerHTML || context.element.data || context.element.textContent
+//   // The text is equal to the outerHTML for elements and data for text nodes
+//   const text = context.element.outerHTML || context.element.data || context.element.textContent
 
-  expect(text).to.equal(expected, desc)
-}
+//   expect(text).to.equal(expected, desc)
+// }
 
 function testSpecAgainstIrisToString({ desc, data, template, expected, partials }: MustacheTestCase) {
   const templatizedFunction = irisToString(template, partials)
+  console.log(templatizedFunction)
   const script = new Script(`result = (${templatizedFunction})(data)`)
   const context: any = { data }
   script.runInNewContext(context)

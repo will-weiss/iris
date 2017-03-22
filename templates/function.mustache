@@ -1,10 +1,9 @@
-{{#name}}
+{{#ofPartial}}
 function {{{name}}}(data, indentation) {
-{{/name}}
-{{^name}}
+{{/ofPartial}}
+{{^ofPartial}}
 function(data) {
-  var indentation = '';
-{{/name}}
+{{/ofPartial}}
   var cursor;
   var context = data;
   var result = {{{initialResultExpr}}};

@@ -15,10 +15,10 @@ function fromHogan(node: HoganParsedNode): IrisNode | undefined {
     case '>':
       return createNode.partial(node.n, node.indent || '')
 
-    case '#': case '^': case '$': case '<':
+    case '#': case '^':
       return createNode.section(keys(node.n), node.tag !== '#', interpreter(node.nodes))
 
-    case '&': case '{': case '_v': 
+    case '&': case '{': case '_v':
       return createNode.variable(keys(node.n), node.tag === '_v')
   }
 }
@@ -30,7 +30,7 @@ function* lines(hoganNodes: HoganParsedNode[]): IterableIterator<IrisNode> {
   for (const node of compact(map(hoganNodes, fromHogan))) {
     line.push(node)
 
-    if (node.tag === 'newline') {
+    if (node.newline) {
       yield * line
       line.length = 1
     }

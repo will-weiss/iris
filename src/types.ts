@@ -38,7 +38,7 @@ interface IrisAnyNode {
   path: null | { keys: string[] }
 }
 
-type IrisNewlineNode = IrisAnyNode & { tag: 'newline'}
+type IrisNewlineNode = IrisAnyNode & { tag: 'newline', newline: true }
 type IrisLinestartNode = IrisAnyNode & { tag: 'linestart', linestart: true }
 type IrisTextNode = IrisAnyNode & { tag: 'text', text: string }
 type IrisPartialNode = IrisAnyNode & { tag: 'partial', partial: { name: string, indentation: string } }
@@ -52,6 +52,20 @@ type IrisNode =
   IrisPartialNode |
   IrisVariableNode |
   IrisSectionNode
+
+type RootTemplateData = {
+  nodes: IrisNode[]
+  ofPartial: null
+  partials: PartialTemplateData[]
+}
+
+type PartialTemplateData = {
+  nodes: IrisNode[]
+  ofPartial: { name: string }
+  partials: null
+}
+
+type TemplateData = RootTemplateData | PartialTemplateData
 
 type IrisCompilerOpts = {
   initialResultExpr: string

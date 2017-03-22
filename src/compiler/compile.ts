@@ -1,6 +1,4 @@
 import templates from './templates'
 
-export default (opts: IrisCompilerOpts) => (nodes: IrisNode[], partials: any): string => {
-  const data = Object.setPrototypeOf({ nodes, partials }, opts)
-  return templates.template.render(data, templates)
-}
+export default (opts: IrisCompilerOpts) => (data: RootTemplateData): string =>
+  templates.template.render({ ...data, ...opts }, templates)

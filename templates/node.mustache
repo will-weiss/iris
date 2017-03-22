@@ -1,11 +1,13 @@
 {{! Variable and section nodes use a path to traverse the given context to reach a given value }}
-{{! If there are no keys to traverse, set the cursor to be equal to the provided data }}
-{{! If there are keys to traverse, start at the initial context and traverse the provided keys }}
 {{#path}}
   cursor =
+
+    {{! If there are no keys to traverse, set the cursor to be equal to the provided data }}
     {{^keys}}
       data
     {{/keys}}
+
+    {{! If there are keys to traverse, start at the initial context and traverse the provided keys }}
     {{#keys.length}}
       context
       {{#keys}}
@@ -15,21 +17,25 @@
   ;
 {{/path}}
 
-{{! For non-section nodes, add to the result in a manner determined by the type of node }}
-{{^section}}
+{{! For linestart nodes of partial templates, add the indentation }}
+{{#linestart}}{{#ofPartial}}
+  {{{addToResultLeft}}}indentation{{{addToResultRight}}};
+{{/ofPartial}}{{/linestart}}
+
+{{! For non-linestart, non-section nodes, add to the result in a manner determined by the type of node }}
+{{^linestart}}{{^section}}
+
   {{{addToResultLeft}}}
-    {{! For linestart nodes, add the indentation level }}
-    {{#linestart}}
-      indentation
-    {{/linestart}}
     {{! For newline nodes, add a newline }}
     {{#newline}}
       "\n"
     {{/newline}}
+
     {{! For text nodes, add the text value of the node }}
     {{#text}}
       {{{text}}}
     {{/text}}
+
     {{! For variable nodes, add the value of the cursor, optionally escaped }}
     {{#variable}}
       cursor == null
@@ -38,14 +44,17 @@
             .replace("&", "&amp;").replace('"', "&quot;").replace("<", "&lt;").replace(">", "&gt;")
           {{/escaped}}
     {{/variable}}
+
     {{! For partial nodes, add the value of the cursor, optionally escaped }}
     {{#partial}}
       typeof {{{name}}} !== "function"
         ? ""
-        : {{{name}}}(data, "{{{indentation}}}")
+        : {{{name}}}(context, "{{{indentation}}}")
     {{/partial}}
   {{{addToResultRight}}};
-{{/section}}
+
+{{/section}}{{/linestart}}
+
 {{#section}}
   {{^inverted}}
     if (cursor) {

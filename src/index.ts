@@ -14,30 +14,26 @@ function parse(template: string): IrisNode[] {
 }
 
 
-export default function iris(template: string, partials: Partials = {}) {
-  const nodes = parse(template)
+// export default function iris(template: string, partials: Partials = {}) {
+//   const nodes = parse(template)
 
-  const parsedPartials = mapValues(partials, (template, name) => ({
-    name,
-    nodes: parse(template)
-  }))
+//   const parsedPartials = mapValues(partials, (template, name) => ({
+//     name,
+//     nodes: parse(template)
+//   }))
 
-  return beautify(compileToDOM(nodes, parsedPartials))
-}
+//   return beautify(compileToDOM(nodes, parsedPartials))
+// }
 
 
 export function irisToString(template: string, partials: Partials = {}) {
   const nodes = parse(template)
 
   const parsedPartials = Object.keys(partials).map(name => ({
-    name,
-    nodes: parse(partials[name])
+    nodes: parse(partials[name]),
+    ofPartial: { name },
+    partials: null,
   }))
 
-  if (parsedPartials.length) {
-    console.log(parsedPartials)
-    console.log(compileToString(nodes, parsedPartials))
-  }
-
-  return compileToString(nodes, parsedPartials)
+  return beautify(compileToString({ nodes, ofPartial: null, partials: parsedPartials }), { preserve_newlines: false })
 }
