@@ -127,3 +127,5 @@ function(context) {
 1. Compile set delimeter tags
 1. Access context properties recursively
 1. Allow objects/functions to be added as element attributes using variable tags
+1. Can compile to static div
+1. Can compile to div with variable

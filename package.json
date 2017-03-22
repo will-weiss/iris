@@ -31,6 +31,7 @@
   },
   "devDependencies": {
     "@types/chai": "3.4.35",
+    "@types/htmlparser2": "3.7.29",
     "@types/js-beautify": "0.0.28",
     "@types/jsdom": "2.0.30",
     "@types/lodash.escape": "4.0.1",

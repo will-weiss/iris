@@ -31,11 +31,7 @@
     "no-unused-expression":true,
     "no-unused-variable":[
       true,
-      "check-parameters",
-      "react",
-      {
-        "ignore-pattern":"React"
-      }
+      "check-parameters"
     ],
     "no-use-before-declare":true,
     "no-var-keyword":true,

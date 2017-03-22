@@ -1,6 +1,7 @@
 import * as createNode from './createNode'
 import { map, compact, split, flatten } from '../generators'
 
+
 const keys = (str: string) => str === '.' ? [] : str.split('.')
 
 
