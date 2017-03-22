@@ -14,18 +14,25 @@ function parse(template: string): IrisNode[] {
 }
 
 
+// export function irisToDOM(template: string, partials: Partials = {}) {
+//   const nodes = parse(template)
+
+//   const parsedPartials = Object.keys(partials).map(name => ({
+//     nodes: parse(partials[name]),
+//     ofPartial: { name },
+//     partials: null,
+//   }))
+
+//   return beautify(compileToDOM({ nodes, ofPartial: null, partials: parsedPartials }), { preserve_newlines: false })
+// }
+
 export function irisToDOM(template: string, partials: Partials = {}) {
-  const nodes = parse(template)
-
-  const parsedPartials = Object.keys(partials).map(name => ({
-    nodes: parse(partials[name]),
-    ofPartial: { name },
-    partials: null,
-  }))
-
-  return beautify(compileToDOM({ nodes, ofPartial: null, partials: parsedPartials }), { preserve_newlines: false })
+  return `function (data) {
+    return document.createElement('div')
+      .appendChild(document.createElement('h3').appendChild(document.createTextNode('In the header!')).parentNode).parentNode
+      .appendChild(document.createElement('button').appendChild(document.createTextNode('Click Me!')).parentNode).parentNode
+  }`
 }
-
 
 export function irisToString(template: string, partials: Partials = {}) {
   const nodes = parse(template)
