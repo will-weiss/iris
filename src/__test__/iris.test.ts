@@ -20,22 +20,12 @@ type TestSpec = (testCase: MustacheTestCase) => void
 
 
 function testSpecGroup(specGroupName: string, runTest: TestSpec) {
-  const specGroupTests = require(`../../spec/specs/${specGroupName}`).tests.map(parseTestCase) as MustacheTestCase[]
+  const specGroupTests = require(`../../spec/specs/${specGroupName}`).tests as MustacheTestCase[]
 
   describe(specGroupName, () =>
     specGroupTests.forEach(testCase =>
       it(testCase.name, () => runTest(testCase))))
 }
-
-
-function parseTestCase(testCase: MustacheTestCase): MustacheTestCase {
-  const { data } = testCase
-  if (!data.lambda) return testCase
-  const func = (new Function ('return ' + data.lambda.js)())
-  const lambda = function() { return func }
-  return { ...testCase, data: { ...data, lambda } }
-}
-
 
 function testSpecAgainstHogan({ desc, data, template, expected, partials }: MustacheTestCase) {
   const rendered = Hogan.compile(template).render(data, partials)
@@ -75,7 +65,6 @@ function* specGroups(): IterableIterator<[string, TestSpec]> {
   yield ['inverted', testSpecAgainstIrisToString]
   yield ['partials', testSpecAgainstIrisToString]
   yield ['delimiters', testSpecAgainstIrisToString]
-  // yield ['~lambdas', testSpecAgainstHogan]
 }
 
 
