@@ -4,7 +4,7 @@ import { map, compact, split, flatten } from '../generators'
 const keys = (str: string) => str === '.' ? [] : str.split('.')
 
 
-function fromHogan(node: HoganParsedNode): IrisNode | IrisNewlineNode | undefined {
+function fromHogan(node: HoganParsedNode): IrisNode | undefined {
   switch (node.tag) {
     case '\n':
       return createNode.newline
@@ -23,22 +23,20 @@ function fromHogan(node: HoganParsedNode): IrisNode | IrisNewlineNode | undefine
   }
 }
 
+
 function* lines(hoganNodes: HoganParsedNode[]): IterableIterator<IrisNode> {
-  let line: IrisNode[] = []
+  const line: IrisNode[] = [createNode.linestart]
 
   for (const node of compact(map(hoganNodes, fromHogan))) {
-    if (node.tag !== 'newline') {
-      line.push(node)
-    } else {
-      yield createNode.linestart
+    line.push(node)
+
+    if (node.tag === 'newline') {
       yield * line
-      yield createNode.text('"\\n"')
-      line = []
+      line.length = 1
     }
   }
 
-  if (line.length) {
-    yield createNode.linestart
+  if (line.length > 1) {
     yield * line
   }
 }

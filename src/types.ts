@@ -46,6 +46,7 @@ type IrisVariableNode = IrisAnyNode & { tag: 'variable', variable: { escaped: bo
 type IrisSectionNode = IrisAnyNode & { tag: 'section', section: { inverted: boolean, nodes: IrisNode[] }, path: { keys: string[] } }
 
 type IrisNode =
+  IrisNewlineNode |
   IrisLinestartNode |
   IrisTextNode |
   IrisPartialNode |

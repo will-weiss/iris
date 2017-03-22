@@ -1,32 +1,48 @@
-{{! Set initial cursor}}
-{{#linestart}}cursor = indentation;{{/linestart}}
-{{#text}}cursor = {{{text}}};{{/text}}
-{{^linestart}}{{^text}}
-  cursor = {{#path.keys.length}}context{{/path.keys.length}}{{^path.keys.length}}data{{/path.keys.length}};
-{{/text}}{{/linestart}}
+{{! Set cursor based on the node type }}
 
-{{#path.keys}}
-  cursor = cursor && cursor["{{{.}}}"];
-{{/path.keys}}
+cursor =
 
-{{#variable}}
-  cursor = cursor == null ? "" : "" + cursor;
-  {{#escaped}}
-    cursor = cursor.replace("&", "&amp;").replace('"', "&quot;").replace("<", "&lt;").replace(">", "&gt;");
-  {{/escaped}}
-{{/variable}}
+  {{#linestart}}
+    indentation
+  {{/linestart}}
 
-{{#partial}}
-  cursor = typeof {{{name}}} !== "function"
-    ? ""
-    : {{{name}}}(cursor, "{{{indentation}}}");
-{{/partial}}
+  {{#text}}
+    {{{text}}}
+  {{/text}}
+
+  {{#newline}}
+    "\n"
+  {{/newline}}
+
+  {{#partial}}
+    typeof {{{name}}} !== "function"
+      ? ""
+      : {{{name}}}(data, "{{{indentation}}}")
+  {{/partial}}
+
+  {{#path}}
+    {{^keys}}
+      data
+    {{/keys}}
+    {{#keys.length}}
+      context
+    {{/keys.length}}
+    {{#keys}}
+      , cursor = cursor && cursor["{{{.}}}"]
+    {{/keys}}
+    {{#variable}}
+      , cursor = cursor == null ? "" : "" + cursor
+      {{#escaped}}
+        , cursor = cursor.replace("&", "&amp;").replace('"', "&quot;").replace("<", "&lt;").replace(">", "&gt;")
+      {{/escaped}}
+    {{/variable}}
+  {{/path}}
+;
 
 {{! Use cursor}}
 {{^section}}
   {{{addToResultLeft}}}cursor{{{addToResultRight}}};
 {{/section}}
-
 
 {{#section}}
   {{^inverted}}
@@ -40,6 +56,7 @@
       }, context);
     }
   {{/inverted}}
+
   {{#inverted}}
     if (!cursor || cursor.length === 0) {
       {{#nodes}}
