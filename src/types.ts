@@ -30,18 +30,22 @@ type HoganParsedNode = HoganParsedNonCommentNode | HoganParsedNodes['!']
 
 interface IrisAnyNode {
   text: null | string
+  linestart: null | true
   partial: null | { name: string, indentation: string }
   keys: null | string[]
   variable: null | { escaped: boolean }
   section: null | { inverted: boolean, nodes: IrisNode[] }
 }
 
+type IrisNewlineNode = IrisAnyNode & { tag: 'newline'}
+type IrisLinestartNode = IrisAnyNode & { tag: 'linestart', linestart: true }
 type IrisTextNode = IrisAnyNode & { tag: 'text', text: string }
 type IrisPartialNode = IrisAnyNode & { tag: 'partial', partial: { name: string, indentation: string } }
 type IrisVariableNode = IrisAnyNode & { tag: 'variable', variable: { escaped: boolean } }
 type IrisSectionNode = IrisAnyNode & { tag: 'section', section: { inverted: boolean, nodes: IrisNode[] } }
 
 type IrisNode =
+  IrisLinestartNode |
   IrisTextNode |
   IrisPartialNode |
   IrisVariableNode |

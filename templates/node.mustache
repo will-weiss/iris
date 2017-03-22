@@ -1,28 +1,33 @@
-{{#text}}
-  cursor = {{{text}}};
-{{/text}}
-{{^text}}
+{{! Set initial cursor}}
+{{#linestart}}cursor = indentation;{{/linestart}}
+{{#text}}cursor = {{{text}}};{{/text}}
+{{^linestart}}{{^text}}
   cursor = {{#keys.length}}context{{/keys.length}}{{^keys.length}}data{{/keys.length}};
-  {{#keys}}
-    cursor = cursor && cursor["{{{.}}}"];
-  {{/keys}}
-{{/text}}
+{{/text}}{{/linestart}}
+
+{{#keys}}
+  cursor = cursor && cursor["{{{.}}}"];
+{{/keys}}
+
 {{#variable}}
   cursor = cursor == null ? "" : "" + cursor;
   {{#escaped}}
     cursor = cursor.replace("&", "&amp;").replace('"', "&quot;").replace("<", "&lt;").replace(">", "&gt;");
   {{/escaped}}
 {{/variable}}
+
 {{#partial}}
   cursor = typeof {{{name}}} !== "function"
     ? ""
-    : {{{name}}}(cursor).split("\n").map(function(s) {
-        return "{{{indentation}}}" + s;
-      }).join("\n");
+    : {{{name}}}(cursor, "{{{indentation}}}");
 {{/partial}}
+
+{{! Use cursor}}
 {{^section}}
   {{{addToResultLeft}}}cursor{{{addToResultRight}}};
 {{/section}}
+
+
 {{#section}}
   {{^inverted}}
     if (cursor) {

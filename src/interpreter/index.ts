@@ -4,12 +4,10 @@ import { map, compact, split, flatten } from '../generators'
 const keys = (str: string) => str === '.' ? [] : str.split('.')
 
 
-function fromHogan(node: HoganParsedNode): IrisNode | undefined {
-  console.log(node)
-
+function fromHogan(node: HoganParsedNode): IrisNode | IrisNewlineNode | undefined {
   switch (node.tag) {
     case '\n':
-      return createNode.text('"\\n"')
+      return createNode.newline
 
     case '_t':
       return createNode.text(JSON.stringify('' + node.text))
@@ -25,23 +23,26 @@ function fromHogan(node: HoganParsedNode): IrisNode | undefined {
   }
 }
 
+function* lines(hoganNodes: HoganParsedNode[]): IterableIterator<IrisNode> {
+  let line: IrisNode[] = []
 
-// export function* lines(hoganNodes: HoganParsedNode[]): IterableIterator<IrisNode[]> {
-//   let currentLine: IrisNode[] = []
+  for (const node of compact(map(hoganNodes, fromHogan))) {
+    if (node.tag !== 'newline') {
+      line.push(node)
+    } else {
+      yield createNode.linestart
+      yield * line
+      yield createNode.text('"\\n"')
+      line = []
+    }
+  }
 
-//   for (const node of compact(map(hoganNodes, fromHogan))) {
-//     if (node.tag === 'newline') {
-//       currentLine.push(createNode.text('"\\n"'))
-//       yield currentLine
-//       currentLine = []
-//     } else {
-//       currentLine.push(node)
-//     }
-//   }
-
-//   yield currentLine
-// }
+  if (line.length) {
+    yield createNode.linestart
+    yield * line
+  }
+}
 
 export default function interpreter(hoganNodes: HoganParsedNode[]): IrisNode[] {
-  return Array.from(compact(map(hoganNodes, fromHogan)))
+  return Array.from(lines(hoganNodes))
 }

@@ -1,4 +1,4 @@
-const irisNodeProto = { tag: null, text: null, partial: null, keys: null, variable: null, section: null }
+const irisNodeProto = { tag: null, linestart: null, text: null, partial: null, keys: null, variable: null, section: null }
 
 const textNodeProto = Object.setPrototypeOf({ tag: 'text' }, irisNodeProto)
 const partialNodeProto = Object.setPrototypeOf({ tag: 'partial' }, irisNodeProto)
@@ -21,3 +21,7 @@ export function section(keys: string[], inverted: boolean, nodes: IrisNode[]): I
 export function variable(keys: string[], escaped: boolean): IrisVariableNode {
   return Object.setPrototypeOf({ keys, variable: { escaped } }, sectionNodeProto)
 }
+
+export const linestart: IrisLinestartNode = Object.setPrototypeOf({ tag: 'linestart', linestart: true }, irisNodeProto)
+
+export const newline: IrisNewlineNode = Object.setPrototypeOf({ tag: 'newline' }, irisNodeProto)

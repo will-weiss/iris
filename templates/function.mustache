@@ -1,5 +1,10 @@
-{{! }}
-function{{#name}} {{{name}}}{{/name}}(data) {
+{{#name}}
+function {{{name}}}(data, indentation) {
+{{/name}}
+{{^name}}
+function(data) {
+  var indentation = '';
+{{/name}}
   var cursor;
   var context = data;
   var result = {{{initialResultExpr}}};
