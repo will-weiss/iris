@@ -33,17 +33,17 @@ interface IrisAnyNode {
   newline: boolean
   text: null | string
   partial: null | { name: string, indentation: string }
-  keys: null | string[]
   variable: null | { escaped: boolean }
   section: null | { inverted: boolean, nodes: IrisNode[] }
+  path: null | { keys: string[] }
 }
 
 type IrisNewlineNode = IrisAnyNode & { tag: 'newline'}
 type IrisLinestartNode = IrisAnyNode & { tag: 'linestart', linestart: true }
 type IrisTextNode = IrisAnyNode & { tag: 'text', text: string }
 type IrisPartialNode = IrisAnyNode & { tag: 'partial', partial: { name: string, indentation: string } }
-type IrisVariableNode = IrisAnyNode & { tag: 'variable', variable: { escaped: boolean } }
-type IrisSectionNode = IrisAnyNode & { tag: 'section', section: { inverted: boolean, nodes: IrisNode[] } }
+type IrisVariableNode = IrisAnyNode & { tag: 'variable', variable: { escaped: boolean }, path: { keys: string[] } }
+type IrisSectionNode = IrisAnyNode & { tag: 'section', section: { inverted: boolean, nodes: IrisNode[] }, path: { keys: string[] } }
 
 type IrisNode =
   IrisLinestartNode |

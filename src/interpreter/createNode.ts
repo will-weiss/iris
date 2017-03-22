@@ -3,7 +3,7 @@ const irisNodeProto = {
   newline: false,
   text: null, 
   partial: null, 
-  keys: null, 
+  path: null,
   variable: null, 
   section: null,
 }
@@ -17,11 +17,11 @@ export function partial(name: string, indentation: string): IrisPartialNode {
 }
 
 export function section(keys: string[], inverted: boolean, nodes: IrisNode[]): IrisSectionNode {
-  return { ...irisNodeProto, tag: 'section', keys, section: { inverted, nodes } }
+  return { ...irisNodeProto, tag: 'section', path: { keys }, section: { inverted, nodes } }
 }
 
 export function variable(keys: string[], escaped: boolean): IrisVariableNode {
-  return { ...irisNodeProto, tag: 'variable', keys, variable: { escaped } }
+  return { ...irisNodeProto, tag: 'variable', path: { keys }, variable: { escaped } }
 }
 
 export const linestart: IrisLinestartNode = { ...irisNodeProto, tag: 'linestart', linestart: true }

@@ -2,12 +2,12 @@
 {{#linestart}}cursor = indentation;{{/linestart}}
 {{#text}}cursor = {{{text}}};{{/text}}
 {{^linestart}}{{^text}}
-  cursor = {{#keys.length}}context{{/keys.length}}{{^keys.length}}data{{/keys.length}};
+  cursor = {{#path.keys.length}}context{{/path.keys.length}}{{^path.keys.length}}data{{/path.keys.length}};
 {{/text}}{{/linestart}}
 
-{{#keys}}
+{{#path.keys}}
   cursor = cursor && cursor["{{{.}}}"];
-{{/keys}}
+{{/path.keys}}
 
 {{#variable}}
   cursor = cursor == null ? "" : "" + cursor;
