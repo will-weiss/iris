@@ -1,27 +1,29 @@
-const irisNodeProto = { tag: null, linestart: null, text: null, partial: null, keys: null, variable: null, section: null }
-
-const textNodeProto = Object.setPrototypeOf({ tag: 'text' }, irisNodeProto)
-const partialNodeProto = Object.setPrototypeOf({ tag: 'partial' }, irisNodeProto)
-const variableNodeProto = Object.setPrototypeOf({ tag: 'variable' }, irisNodeProto)
-const sectionNodeProto = Object.setPrototypeOf({ tag: 'section' }, irisNodeProto)
-
+const irisNodeProto = {
+  linestart: false,
+  newline: false,
+  text: null, 
+  partial: null, 
+  keys: null, 
+  variable: null, 
+  section: null,
+}
 
 export function text(text: string): IrisTextNode {
-  return Object.setPrototypeOf({ text }, textNodeProto)
+  return { ...irisNodeProto, tag: 'text', text }
 }
 
 export function partial(name: string, indentation: string): IrisPartialNode {
-  return Object.setPrototypeOf({ partial: { name, indentation } }, partialNodeProto)
+  return { ...irisNodeProto, tag: 'partial', partial: { name, indentation } }
 }
 
 export function section(keys: string[], inverted: boolean, nodes: IrisNode[]): IrisSectionNode {
-  return Object.setPrototypeOf({ keys, section: { inverted, nodes } }, variableNodeProto)
+  return { ...irisNodeProto, tag: 'section', keys, section: { inverted, nodes } }
 }
 
 export function variable(keys: string[], escaped: boolean): IrisVariableNode {
-  return Object.setPrototypeOf({ keys, variable: { escaped } }, sectionNodeProto)
+  return { ...irisNodeProto, tag: 'variable', keys, variable: { escaped } }
 }
 
-export const linestart: IrisLinestartNode = Object.setPrototypeOf({ tag: 'linestart', linestart: true }, irisNodeProto)
+export const linestart: IrisLinestartNode = { ...irisNodeProto, tag: 'linestart', linestart: true }
 
-export const newline: IrisNewlineNode = Object.setPrototypeOf({ tag: 'newline' }, irisNodeProto)
+export const newline: IrisNewlineNode = { ...irisNodeProto, tag: 'newline', newline: true }

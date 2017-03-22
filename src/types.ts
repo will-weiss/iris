@@ -29,8 +29,9 @@ type HoganParsedNonCommentNode =
 type HoganParsedNode = HoganParsedNonCommentNode | HoganParsedNodes['!']
 
 interface IrisAnyNode {
+  linestart: boolean
+  newline: boolean
   text: null | string
-  linestart: null | true
   partial: null | { name: string, indentation: string }
   keys: null | string[]
   variable: null | { escaped: boolean }
