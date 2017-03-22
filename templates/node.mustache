@@ -14,64 +14,70 @@
         , cursor = cursor && cursor["{{{.}}}"]
       {{/keys}}
     {{/keys.length}}
-  ;
+  ,
 {{/path}}
 
 {{! For linestart nodes of partial templates, add the indentation }}
-{{#linestart}}{{#ofPartial}}
-  {{{addToResultLeft}}}indentation{{{addToResultRight}}};
-{{/ofPartial}}{{/linestart}}
+{{#linestart}}
+  {{#ofPartial}}
+    indentation
+  {{/ofPartial}}
+  {{^ofPartial}}
+    ""
+  {{/ofPartial}}
+{{/linestart}}
 
 {{! For non-linestart, non-section nodes, add to the result in a manner determined by the type of node }}
 {{^linestart}}{{^section}}
 
-  {{{addToResultLeft}}}
-    {{! For newline nodes, add a newline }}
-    {{#newline}}
-      "\n"
-    {{/newline}}
+  {{! For newline nodes, add a newline }}
+  {{#newline}}
+    "\n"
+  {{/newline}}
 
-    {{! For text nodes, add the text value of the node }}
-    {{#text}}
-      {{{text}}}
-    {{/text}}
+  {{! For text nodes, add the text value of the node }}
+  {{#text}}
+    {{{text}}}
+  {{/text}}
 
-    {{! For variable nodes, add the value of the cursor, optionally escaped }}
-    {{#variable}}
-      cursor == null
-        ? ""
-        : ("" + cursor){{#escaped}}
-            .replace("&", "&amp;").replace('"', "&quot;").replace("<", "&lt;").replace(">", "&gt;")
-          {{/escaped}}
-    {{/variable}}
+  {{! For variable nodes, add the value of the cursor, optionally escaped }}
+  {{#variable}}
+    cursor == null
+      ? ""
+      : ("" + cursor){{#escaped}}
+          .replace("&", "&amp;").replace('"', "&quot;").replace("<", "&lt;").replace(">", "&gt;")
+        {{/escaped}}
+  {{/variable}}
 
-    {{! For partial nodes, add the value of the cursor, optionally escaped }}
-    {{#partial}}
-      typeof {{{name}}} !== "function"
-        ? ""
-        : {{{name}}}(context, "{{{indentation}}}")
-    {{/partial}}
-  {{{addToResultRight}}};
+  {{! For partial nodes, add the value of the cursor, optionally escaped }}
+  {{#partial}}
+    typeof {{{name}}} !== "function"
+      ? ""
+      : {{{name}}}(context, "{{{indentation}}}")
+  {{/partial}}
 
 {{/section}}{{/linestart}}
 
 {{#section}}
   {{^inverted}}
-    if (cursor) {
-      (Array.isArray(cursor) ? cursor : [cursor]).forEach(function(data) {
-        var cursor;
-        var context = data && typeof data === 'object' ? Object.assign(Object.create(this), data) : this;
-        {{#nodes}}
-          {{> node}}
-        {{/nodes}}
-      }, context);
-    }
+    cursor
+      ? (Array.isArray(cursor) ? cursor : [cursor]).map(function(data) {
+          var cursor;
+          var context = data && typeof data === 'object' ? Object.assign(Object.create(this), data) : this;
+          return ("" {{#nodes}}
+            +
+            ({{> node}})
+          {{/nodes}})
+        }, context).join("")
+      : ""
   {{/inverted}}
   {{#inverted}}
-    if (!cursor || cursor.length === 0) {
-      {{#nodes}}
-        {{> node}}
-      {{/nodes}}
-    }
+    (!cursor || cursor.length === 0)
+      ? ""
+        {{#nodes}}
+          +
+          ({{> node}})
+        {{/nodes}}
+      : ""
   {{/inverted}}
 {{/section}}

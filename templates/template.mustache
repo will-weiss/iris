@@ -7,13 +7,11 @@ function(data) {
 
   var cursor;
   var context = data;
-  var result = {{{initialResultExpr}}};
-
+  return (""
   {{#nodes}}
-    {{> node}}
-  {{/nodes}}
-
-  return result;
+    +
+    ({{> node}})
+  {{/nodes}});
 
   {{#partials}}
     {{> template}}
