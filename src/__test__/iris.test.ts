@@ -74,7 +74,7 @@ function* specGroups(): IterableIterator<[string, TestSpec]> {
   yield ['sections', testSpecAgainstIrisToString]
   yield ['inverted', testSpecAgainstIrisToString]
   yield ['partials', testSpecAgainstIrisToString]
-  // yield ['delimiters', testSpecAgainstIris]
+  yield ['delimiters', testSpecAgainstIrisToString]
   // yield ['~lambdas', testSpecAgainstHogan]
 }
 

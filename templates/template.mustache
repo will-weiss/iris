@@ -1,13 +1,13 @@
 {{#partials.length}}
-  (function() {
-    return {{> function}};
+(function() {
+  return {{> function}};
 
-    {{#partials}}
-      {{> function}}
+{{#partials}}
+  {{> function}}
 
-    {{/partials}}
-  })()
+{{/partials}}
+})()
 {{/partials.length}}
 {{^partials.length}}
-  {{> function}}
+{{> function}}
 {{/partials.length}}

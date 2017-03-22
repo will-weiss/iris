@@ -17,24 +17,19 @@
 
 {{! For non-section nodes, add to the result in a manner determined by the type of node }}
 {{^section}}
-
   {{{addToResultLeft}}}
-
     {{! For linestart nodes, add the indentation level }}
     {{#linestart}}
       indentation
     {{/linestart}}
-
     {{! For newline nodes, add a newline }}
     {{#newline}}
       "\n"
     {{/newline}}
-
     {{! For text nodes, add the text value of the node }}
     {{#text}}
       {{{text}}}
     {{/text}}
-
     {{! For variable nodes, add the value of the cursor, optionally escaped }}
     {{#variable}}
       cursor == null
@@ -43,17 +38,14 @@
             .replace("&", "&amp;").replace('"', "&quot;").replace("<", "&lt;").replace(">", "&gt;")
           {{/escaped}}
     {{/variable}}
-
     {{! For partial nodes, add the value of the cursor, optionally escaped }}
     {{#partial}}
       typeof {{{name}}} !== "function"
         ? ""
         : {{{name}}}(data, "{{{indentation}}}")
     {{/partial}}
-
   {{{addToResultRight}}};
 {{/section}}
-
 {{#section}}
   {{^inverted}}
     if (cursor) {
@@ -66,7 +58,6 @@
       }, context);
     }
   {{/inverted}}
-
   {{#inverted}}
     if (!cursor || cursor.length === 0) {
       {{#nodes}}
