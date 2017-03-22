@@ -1,13 +1,21 @@
-{{#partials.length}}
-(function() {
-  return {{> function}};
+{{#ofPartial}}
+function {{{name}}}(data, indentation) {
+{{/ofPartial}}
+{{^ofPartial}}
+function(data) {
+{{/ofPartial}}
 
-{{#partials}}
-  {{> function}}
+  var cursor;
+  var context = data;
+  var result = {{{initialResultExpr}}};
 
-{{/partials}}
-})()
-{{/partials.length}}
-{{^partials.length}}
-{{> function}}
-{{/partials.length}}
+  {{#nodes}}
+    {{> node}}
+  {{/nodes}}
+
+  return result;
+
+  {{#partials}}
+    {{> template}}
+  {{/partials}}
+}
