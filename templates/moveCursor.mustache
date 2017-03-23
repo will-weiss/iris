@@ -1,0 +1,10 @@
+{{! Variable and section nodes use a path to traverse the given context to reach a given value }}
+{{! If there are no keys to traverse, set the cursor to be equal to the provided data }}
+{{! If there are keys to traverse, start at the initial context and traverse the provided keys }}
+{{#path}}
+  cursor =
+    {{^keys.length}}data{{/keys.length}}
+    {{#keys.length}}context{{/keys.length}}
+    {{#keys}}, cursor = cursor && cursor["{{{.}}}"]{{/keys}}
+  ,
+{{/path}}

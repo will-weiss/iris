@@ -12,8 +12,8 @@ export function text(text: string): IrisTextNode {
   return { ...irisNodeProto, tag: 'text', text }
 }
 
-export function partial(name: string, indentation: string): IrisPartialNode {
-  return { ...irisNodeProto, tag: 'partial', partial: { name, indentation } }
+export function partial(name: string, exists: boolean, indentation: string): IrisPartialNode {
+  return { ...irisNodeProto, tag: 'partial', partial: { name, exists, indentation } }
 }
 
 export function section(keys: string[], inverted: boolean, nodes: IrisNode[]): IrisSectionNode {

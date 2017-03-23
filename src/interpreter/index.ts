@@ -5,7 +5,7 @@ import { map, compact, split, flatten } from '../generators'
 const keys = (str: string) => str === '.' ? [] : str.split('.')
 
 
-function fromHogan(node: HoganParsedNode): IrisNode | undefined {
+const fromHogan = (partialNames: Set<string>) => (node: HoganParsedNode): IrisNode | undefined => {
   switch (node.tag) {
     case '\n':
       return createNode.newline
@@ -14,10 +14,10 @@ function fromHogan(node: HoganParsedNode): IrisNode | undefined {
       return createNode.text(JSON.stringify('' + node.text))
 
     case '>':
-      return createNode.partial(node.n, node.indent || '')
+      return createNode.partial(node.n, partialNames.has(node.n), node.indent || '')
 
     case '#': case '^':
-      return createNode.section(keys(node.n), node.tag !== '#', interpreter(node.nodes))
+      return createNode.section(keys(node.n), node.tag !== '#', interpreter(node.nodes, partialNames))
 
     case '&': case '{': case '_v':
       return createNode.variable(keys(node.n), node.tag === '_v')
@@ -25,10 +25,10 @@ function fromHogan(node: HoganParsedNode): IrisNode | undefined {
 }
 
 
-function* lines(hoganNodes: HoganParsedNode[]): IterableIterator<IrisNode> {
+function* lines(hoganNodes: HoganParsedNode[], partialNames: Set<string>): IterableIterator<IrisNode> {
   const line: IrisNode[] = [createNode.linestart]
 
-  for (const node of compact(map(hoganNodes, fromHogan))) {
+  for (const node of compact(map(hoganNodes, fromHogan(partialNames)))) {
     line.push(node)
 
     if (node.newline) {
@@ -42,6 +42,6 @@ function* lines(hoganNodes: HoganParsedNode[]): IterableIterator<IrisNode> {
   }
 }
 
-export default function interpreter(hoganNodes: HoganParsedNode[]): IrisNode[] {
-  return Array.from(lines(hoganNodes))
+export default function interpreter(hoganNodes: HoganParsedNode[], partialNames: Set<string>): IrisNode[] {
+  return Array.from(lines(hoganNodes, partialNames))
 }

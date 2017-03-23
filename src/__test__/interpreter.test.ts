@@ -20,7 +20,7 @@ describe('interpreter', () => {
           nodes: [ { tag: '_v', n: 'name', otag: '{{', ctag: '}}', i: 16 } ] },
         { tag: '_t', text: new String('z') } ]
 
-    const interpreted = interpreter(hoganTokens)
+    const interpreted = interpreter(hoganTokens, new Set())
 
     const expected: IrisNode[] = [
       {
