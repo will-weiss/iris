@@ -45,17 +45,31 @@ type IrisNode =
   IrisNonTemplateNode | IrisTemplateNode
 
 type RootTemplateData = {
-  nodes: IrisNode[]
+  linestart: false
+  newline: false
+  text: null
+  partialRef: null
+  variable: null
+  section: null
   partialTemplate: null
   rootTemplate: {
     partialTemplates: PartialTemplateData[]
   }
+  path: null
+  nodes: IrisNode[]
 }
 
 type PartialTemplateData = {
-  nodes: IrisNode[]
+  linestart: false
+  newline: false
+  text: null
+  partialRef: null
+  variable: null
+  section: null
   partialTemplate: { name: string }
   rootTemplate: null
+  path: null
+  nodes: IrisNode[]
 }
 
 type TemplateData = RootTemplateData | PartialTemplateData

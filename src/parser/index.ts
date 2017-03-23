@@ -63,12 +63,30 @@ export default function parse(template: string, partials: PartialTemplateStrings
   const partialNames = new Set(Object.keys(partials))
   const nodes = parseTemplate(template, false, partialNames)
 
-  const partialTemplates = Object.keys(partials).map(name => ({
+  const partialTemplates: PartialTemplateData[] = Object.keys(partials).map((name): PartialTemplateData => ({
     nodes: parseTemplate(partials[name], true, partialNames),
     partialTemplate: { name },
     rootTemplate: null,
+    linestart: false,
+    newline: false,
+    text: null,
+    partialRef: null,
+    variable: null,
+    section: null,
+    path: null,
   }))
 
-  return { nodes, partialTemplate: null, rootTemplate: { partialTemplates } }
+  return {
+    nodes,
+    partialTemplate: null,
+    rootTemplate: { partialTemplates },
+    linestart: false,
+    newline: false,
+    text: null,
+    partialRef: null,
+    variable: null,
+    section: null,
+    path: null,
+  }
 }
 
