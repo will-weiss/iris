@@ -17,7 +17,7 @@ interface IrisAnyNode {
   linestart: boolean
   newline: boolean
   text: null | string
-  partial: null | { name: string, exists: boolean, indentation: string }
+  partialRef: null | { name: string, indentation: string }
   variable: null | { escaped: boolean }
   section: null | { inverted: boolean, nodes: IrisNode[] }
   path: null | { keys: string[] }
@@ -26,7 +26,7 @@ interface IrisAnyNode {
 type IrisNewlineNode = IrisAnyNode & { tag: 'newline', newline: true }
 type IrisLinestartNode = IrisAnyNode & { tag: 'linestart', linestart: true }
 type IrisTextNode = IrisAnyNode & { tag: 'text', text: string }
-type IrisPartialNode = IrisAnyNode & { tag: 'partial', partial: { name: string, exists: boolean, indentation: string } }
+type IrisPartialRefNode = IrisAnyNode & { tag: 'partialRef', partialRef: { name: string, indentation: string } }
 type IrisVariableNode = IrisAnyNode & { tag: 'variable', variable: { escaped: boolean }, path: { keys: string[] } }
 type IrisSectionNode = IrisAnyNode & { tag: 'section', section: { inverted: boolean, nodes: IrisNode[] }, path: { keys: string[] } }
 
@@ -34,7 +34,7 @@ type IrisNode =
   IrisNewlineNode |
   IrisLinestartNode |
   IrisTextNode |
-  IrisPartialNode |
+  IrisPartialRefNode |
   IrisVariableNode |
   IrisSectionNode
 

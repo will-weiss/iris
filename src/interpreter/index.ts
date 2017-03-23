@@ -14,7 +14,7 @@ const fromHogan = (partialNames: Set<string>) => (node: HoganParsedNode): IrisNo
       return createNode.text(JSON.stringify('' + node.text))
 
     case '>':
-      return createNode.partial(node.n, partialNames.has(node.n), node.indent || '')
+      return partialNames.has(node.n) ? createNode.partialRef(node.n, node.indent || '') : undefined
 
     case '#': case '^':
       return createNode.section(keys(node.n), node.tag !== '#', interpreter(node.nodes, partialNames))

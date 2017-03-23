@@ -4,7 +4,7 @@
   {{! linestart: the start of a line }}
   {{! newline: a line break }}
   {{! text: static content in the template }}
-  {{! partial: a reference to another template }}
+  {{! partialRef: a reference to another template }}
   {{! variable: a value given by looking up a key in the current context }}
   {{! section: a block conditionally rendered depending on looking up a key in the current context }}
     {{! inverted: rendered once for falsy values and empty lists }}
@@ -27,12 +27,10 @@
   {{{text}}}
 {{/text}}
 
-{{! partial nodes referring to non-existent partials return the result of the compiled function of that partial with the current context }}
-{{! partial nodes referring to non-existent partials return the empty string }}
-{{#partial}}
-  {{#exists}}{{{name}}}(context, "{{{indentation}}}"){{/exists}}
-  {{^exists}}""{{/exists}}
-{{/partial}}
+{{! partialRef nodes return the result of the compiled function of that partial with the current context }}
+{{#partialRef}}
+  {{{name}}}(context, "{{{indentation}}}")
+{{/partialRef}}
 
 {{! For variable nodes, the cursor is moved to the location of the variable }}
 {{! Then the value of the  }}

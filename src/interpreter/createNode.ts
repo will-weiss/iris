@@ -2,7 +2,7 @@ const irisNodeProto = {
   linestart: false,
   newline: false,
   text: null, 
-  partial: null, 
+  partialRef: null,
   path: null,
   variable: null, 
   section: null,
@@ -12,8 +12,8 @@ export function text(text: string): IrisTextNode {
   return { ...irisNodeProto, tag: 'text', text }
 }
 
-export function partial(name: string, exists: boolean, indentation: string): IrisPartialNode {
-  return { ...irisNodeProto, tag: 'partial', partial: { name, exists, indentation } }
+export function partialRef(name: string, indentation: string): IrisPartialRefNode {
+  return { ...irisNodeProto, tag: 'partialRef', partialRef: { name, indentation } }
 }
 
 export function section(keys: string[], inverted: boolean, nodes: IrisNode[]): IrisSectionNode {
