@@ -9,8 +9,8 @@ type Partials = {
   [name: string]: string
 }
 
-function parse(template: string, partialNames: Set<string>): IrisNode[] {
-  return interpreter(mustacheParser(template), partialNames)
+function parse(template: string, ofPartial: boolean, partialNames: Set<string>): IrisNode[] {
+  return interpreter(mustacheParser(template), ofPartial, partialNames)
 }
 
 
@@ -36,10 +36,10 @@ export function irisToDOM(template: string, partials: Partials = {}) {
 
 export function irisToString(template: string, partials: Partials = {}) {
   const partialNames = new Set(Object.keys(partials))
-  const nodes = parse(template, partialNames)
+  const nodes = parse(template, false, partialNames)
 
   const parsedPartials = Object.keys(partials).map(name => ({
-    nodes: parse(partials[name], partialNames),
+    nodes: parse(partials[name], true, partialNames),
     ofPartial: { name },
     partials: null,
   }))
