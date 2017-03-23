@@ -64,6 +64,7 @@ export default function parse(template: string, partials: PartialTemplateStrings
   const nodes = parseTemplate(template, false, partialNames)
 
   const partialTemplates: PartialTemplateData[] = Object.keys(partials).map((name): PartialTemplateData => ({
+    tag: 'partialTemplate',
     nodes: parseTemplate(partials[name], true, partialNames),
     partialTemplate: { name },
     rootTemplate: null,
@@ -77,6 +78,7 @@ export default function parse(template: string, partials: PartialTemplateStrings
   }))
 
   return {
+    tag: 'rootTemplate',
     nodes,
     partialTemplate: null,
     rootTemplate: { partialTemplates },
