@@ -1,32 +1,17 @@
 type Falsy = false | 0 | '' | null | undefined
 
-type HoganParsedNodes = {
-  '#': { tag: '#', n: string, otag: string, ctag: string, i: number, end: number, nodes: HoganParsedNode[] }
-  '^': { tag: '^', n: string, otag: string, ctag: string, i: number, end: number, nodes: HoganParsedNode[] }
-  '$': { tag: '$', n: string, otag: string, ctag: string, i: number, end: number, nodes: HoganParsedNode[] }
-  '<': { tag: '<', n: string, otag: string, ctag: string, i: number, end: number, nodes: HoganParsedNode[] }
-  '>': { tag: '>', n: string, otag: string, ctag: string, i: number, end: number, nodes: HoganParsedNode[], indent: string }
-  '_v': { tag: '_v', n: string, otag: string, ctag: string, i: number }
-  '{': { tag: '{', n: string, otag: string, ctag: string, i: number }
-  '&': { tag: '&', n: string, otag: string, ctag: string, i: number }
-  '_t': { tag: '_t', text: String }
-  '\n': { tag: '\n' }
-  '!': { tag: '!', n: string, otag: string, ctag: string, i: number }
-}
+interface HoganNode<Tag> { tag: Tag }
+interface TaggedHoganNode<Tag> extends HoganNode<Tag> { n: string, otag: string, ctag: string, i: number }
 
-type HoganParsedNonCommentNode =
-  HoganParsedNodes['#'] |
-  HoganParsedNodes['^'] |
-  HoganParsedNodes['$'] |
-  HoganParsedNodes['<'] |
-  HoganParsedNodes['>'] |
-  HoganParsedNodes['_v'] |
-  HoganParsedNodes['{'] |
-  HoganParsedNodes['&'] |
-  HoganParsedNodes['_t'] |
-  HoganParsedNodes['\n']
+type HoganNodeNewline  = HoganNode<'\n'>
+type HoganNodeText     = HoganNode<'_t'> & { text: String }
+type HoganNodeComment  = TaggedHoganNode<'!'>
+type HoganNodeVariable = TaggedHoganNode<'&' | '{' | '_v'>
+type HoganNodePartial  = TaggedHoganNode<'>'> & { indent: string }
+type HoganNodeSection  = TaggedHoganNode<'#' | '^'> & { end: number, nodes: HoganParsedNode[] }
 
-type HoganParsedNode = HoganParsedNonCommentNode | HoganParsedNodes['!']
+type HoganParsedNode =
+  HoganNodeNewline | HoganNodeText | HoganNodeComment | HoganNodeVariable | HoganNodePartial | HoganNodeSection
 
 interface IrisAnyNode {
   linestart: boolean
