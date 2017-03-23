@@ -1,4 +1,4 @@
 import templates from './templates'
 
-export default (data: RootTemplateData): string =>
+export default (data: IrisRootTemplateNode): string =>
   templates.template.render(data, templates)

@@ -44,12 +44,6 @@ type IrisTemplateNode =
 type IrisNode =
   IrisNonTemplateNode | IrisTemplateNode
 
-type RootTemplateData = IrisRootTemplateNode
-
-type PartialTemplateData = IrisPartialTemplateNode
-
-type TemplateData = RootTemplateData | PartialTemplateData
-
 type TemplateString = string
 
 interface PartialTemplateStrings {
