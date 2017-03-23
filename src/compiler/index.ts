@@ -1,6 +1,4 @@
-import * as opts from './opts'
-import compile from './compile'
+import templates from './templates'
 
-
-export const compileToDOM = compile(opts.asDOM)
-export const compileToString = compile(opts.asString)
+export default (data: RootTemplateData): string =>
+  templates.template.render(data, templates)

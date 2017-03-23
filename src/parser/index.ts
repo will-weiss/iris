@@ -59,7 +59,7 @@ function parseTemplate(template: string, ofPartial: boolean, partialNames: Set<s
 }
 
 
-export default function parse(template: string, partials: PartialTemplateStrings = {}) {
+export default function parse(template: string, partials: PartialTemplateStrings = {}): RootTemplateData {
   const partialNames = new Set(Object.keys(partials))
   const nodes = parseTemplate(template, false, partialNames)
 

@@ -1,13 +1,9 @@
 import parse from './parser'
-import { compileToDOM, compileToString } from './compiler'
+import compile from './compiler'
 import beautify = require('js-beautify')
 
 
-type Partials = {
-  [name: string]: string
-}
-
-export function irisToDOM(template: string, partials: Partials = {}) {
+export function irisToDOM(template: string, partials: PartialTemplateStrings = {}) {
   return `function (data) {
     return document.createElement('div')
       .appendChild(document.createElement('h3').appendChild(document.createTextNode('In the header!')).parentNode).parentNode
@@ -15,7 +11,7 @@ export function irisToDOM(template: string, partials: Partials = {}) {
   }`
 }
 
-export function irisToString(template: string, partials: Partials = {}) {
+export function irisToString(template: string, partials: PartialTemplateStrings = {}) {
   const data = parse(template, partials)
-  return beautify(compileToString(data), { preserve_newlines: false })
+  return beautify(compile(data), { preserve_newlines: false })
 }

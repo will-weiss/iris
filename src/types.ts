@@ -52,12 +52,6 @@ type PartialTemplateData = {
 
 type TemplateData = RootTemplateData | PartialTemplateData
 
-type IrisCompilerOpts = {
-  initialResultExpr: string
-  addToResultLeft: string
-  addToResultRight: string
-}
-
 type TemplateString = string
 
 interface PartialTemplateStrings {
