@@ -57,3 +57,9 @@ type IrisCompilerOpts = {
   addToResultLeft: string
   addToResultRight: string
 }
+
+type TemplateString = string
+
+interface PartialTemplateStrings {
+  [name: string]: TemplateString
+}

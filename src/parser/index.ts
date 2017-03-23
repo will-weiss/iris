@@ -1,6 +1,11 @@
+const Hogan = require('hogan.js')
 import * as createNode from './createNode'
 import { map, compact, split, flatten } from '../generators'
 
+
+function mustacheParser(template: string): HoganParsedNode[] {
+  return Hogan.parse(Hogan.scan(template))
+}
 
 const keys = (str: string) => str === '.' ? [] : str.split('.')
 
@@ -44,6 +49,26 @@ function* lines(hoganNodes: HoganParsedNode[], ofPartial: boolean, partialNames:
   }
 }
 
-export default function interpreter(hoganNodes: HoganParsedNode[], ofPartial: boolean, partialNames: Set<string>): IrisNode[] {
+function interpreter(hoganNodes: HoganParsedNode[], ofPartial: boolean, partialNames: Set<string>): IrisNode[] {
   return Array.from(lines(hoganNodes, ofPartial, partialNames))
 }
+
+
+function parseTemplate(template: string, ofPartial: boolean, partialNames: Set<string>): IrisNode[] {
+  return interpreter(mustacheParser(template), ofPartial, partialNames)
+}
+
+
+export default function parse(template: string, partials: PartialTemplateStrings = {}) {
+  const partialNames = new Set(Object.keys(partials))
+  const nodes = parseTemplate(template, false, partialNames)
+
+  const parsedPartials = Object.keys(partials).map(name => ({
+    nodes: parseTemplate(partials[name], true, partialNames),
+    ofPartial: { name },
+    partials: null,
+  }))
+
+  return { nodes, ofPartial: null, partials: parsedPartials }
+}
+
