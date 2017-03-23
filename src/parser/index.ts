@@ -1,6 +1,6 @@
 const Hogan = require('hogan.js')
 import * as createNode from './createNode'
-import { map, compact, split, flatten } from '../generators'
+import { map, compact } from '../generators'
 
 
 function mustacheParser(template: string): HoganParsedNode[] {
@@ -10,7 +10,7 @@ function mustacheParser(template: string): HoganParsedNode[] {
 const keys = (str: string) => str === '.' ? [] : str.split('.')
 
 
-const fromHogan = (ofPartial: boolean, partialNames: Set<string>) => (node: HoganParsedNode): IrisNode | undefined => {
+const fromHogan = (ofPartial: boolean, partialNames: Set<string>) => (node: HoganParsedNode): IrisNonTemplateNode | undefined => {
   switch (node.tag) {
     case '\n':
       return createNode.newline
@@ -30,8 +30,8 @@ const fromHogan = (ofPartial: boolean, partialNames: Set<string>) => (node: Hoga
 }
 
 
-function* lines(hoganNodes: HoganParsedNode[], ofPartial: boolean, partialNames: Set<string>): IterableIterator<IrisNode> {
-  const line: IrisNode[] = []
+function* lines(hoganNodes: HoganParsedNode[], ofPartial: boolean, partialNames: Set<string>): IterableIterator<IrisNonTemplateNode> {
+  const line: IrisNonTemplateNode[] = []
 
   for (const node of compact(map(hoganNodes, fromHogan(ofPartial, partialNames)))) {
     line.push(node)
@@ -49,12 +49,12 @@ function* lines(hoganNodes: HoganParsedNode[], ofPartial: boolean, partialNames:
   }
 }
 
-function interpreter(hoganNodes: HoganParsedNode[], ofPartial: boolean, partialNames: Set<string>): IrisNode[] {
+function interpreter(hoganNodes: HoganParsedNode[], ofPartial: boolean, partialNames: Set<string>): IrisNonTemplateNode[] {
   return Array.from(lines(hoganNodes, ofPartial, partialNames))
 }
 
 
-function parseTemplate(template: string, ofPartial: boolean, partialNames: Set<string>): IrisNode[] {
+function parseTemplate(template: string, ofPartial: boolean, partialNames: Set<string>): IrisNonTemplateNode[] {
   return interpreter(mustacheParser(template), ofPartial, partialNames)
 }
 

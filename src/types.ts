@@ -19,7 +19,9 @@ interface IrisAnyNode {
   text: null | string
   partialRef: null | { name: string, indentation: string }
   variable: null | { escaped: boolean }
-  section: null | { inverted: boolean, nodes: IrisNode[] }
+  section: null | { inverted: boolean, nodes: IrisNonTemplateNode[] }
+  partialTemplate: null | { name: string, nodes: IrisNonTemplateNode[] }
+  rootTemplate: null | { partialTemplates: IrisPartialTemplateNode[], nodes: IrisNonTemplateNode[] }
   path: null | { keys: string[] }
 }
 
@@ -29,14 +31,17 @@ type IrisTextNode = IrisAnyNode & { tag: 'text', text: string }
 type IrisPartialRefNode = IrisAnyNode & { tag: 'partialRef', partialRef: { name: string, indentation: string } }
 type IrisVariableNode = IrisAnyNode & { tag: 'variable', variable: { escaped: boolean }, path: { keys: string[] } }
 type IrisSectionNode = IrisAnyNode & { tag: 'section', section: { inverted: boolean, nodes: IrisNode[] }, path: { keys: string[] } }
+type IrisPartialTemplateNode = IrisAnyNode & { tag: 'partialTemplate', partialTemplate: { name: string, nodes: IrisNode[] } }
+type IrisRootTemplateNode = IrisAnyNode & { tag: 'rootTemplate', rootTemplate: { partialTemplates: IrisPartialTemplateNode[], nodes: IrisNonTemplateNode[] } }
+
+type IrisNonTemplateNode =
+  IrisNewlineNode | IrisLinestartNode | IrisTextNode | IrisPartialRefNode | IrisVariableNode | IrisSectionNode
+
+type IrisTemplateNode =
+  IrisPartialTemplateNode | IrisRootTemplateNode
 
 type IrisNode =
-  IrisNewlineNode |
-  IrisLinestartNode |
-  IrisTextNode |
-  IrisPartialRefNode |
-  IrisVariableNode |
-  IrisSectionNode
+  IrisNonTemplateNode | IrisTemplateNode
 
 type RootTemplateData = {
   nodes: IrisNode[]
