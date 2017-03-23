@@ -65,10 +65,10 @@ export default function parse(template: string, partials: PartialTemplateStrings
 
   const parsedPartials = Object.keys(partials).map(name => ({
     nodes: parseTemplate(partials[name], true, partialNames),
-    ofPartial: { name },
+    partialTemplate: { name },
     partials: null,
   }))
 
-  return { nodes, ofPartial: null, partials: parsedPartials }
+  return { nodes, partialTemplate: null, partials: parsedPartials }
 }
 

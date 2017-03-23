@@ -45,13 +45,13 @@ type IrisNode =
 
 type RootTemplateData = {
   nodes: IrisNode[]
-  ofPartial: null
+  partialTemplate: null
   partials: PartialTemplateData[]
 }
 
 type PartialTemplateData = {
   nodes: IrisNode[]
-  ofPartial: { name: string }
+  partialTemplate: { name: string }
   partials: null
 }
 

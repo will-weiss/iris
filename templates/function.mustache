@@ -6,8 +6,8 @@
 
 {{! Function declaration }}
 function
-{{#ofPartial}}{{{name}}}(data, indentation){{/ofPartial}}
-{{^ofPartial}}(data){{/ofPartial}}
+{{#partialTemplate}}{{{name}}}(data, indentation){{/partialTemplate}}
+{{^partialTemplate}}(data){{/partialTemplate}}
 
 {{! Function body }}
 {
