@@ -31,7 +31,7 @@ type IrisLinestartNode = IrisAnyNode & { tag: 'linestart', linestart: true }
 type IrisTextNode = IrisAnyNode & { tag: 'text', text: string }
 type IrisPartialRefNode = IrisAnyNode & { tag: 'partialRef', partialRef: { name: string, indentation: string } }
 type IrisVariableNode = IrisAnyNode & { tag: 'variable', variable: { escaped: boolean }, path: { keys: string[] } }
-type IrisSectionNode = IrisAnyNode & { tag: 'section', section: { inverted: boolean }, path: { keys: string[] }, nodes: IrisNode[] } 
+type IrisSectionNode = IrisAnyNode & { tag: 'section', section: { inverted: boolean }, path: { keys: string[] }, nodes: IrisNode[] }
 type IrisPartialTemplateNode = IrisAnyNode & { tag: 'partialTemplate', partialTemplate: { name: string }, nodes: IrisNode[] }
 type IrisRootTemplateNode = IrisAnyNode & { tag: 'rootTemplate', rootTemplate: { partialTemplates: IrisPartialTemplateNode[] }, nodes: IrisNonTemplateNode[] }
 
@@ -47,13 +47,15 @@ type IrisNode =
 type RootTemplateData = {
   nodes: IrisNode[]
   partialTemplate: null
-  partials: PartialTemplateData[]
+  rootTemplate: {
+    partialTemplates: PartialTemplateData[]
+  }
 }
 
 type PartialTemplateData = {
   nodes: IrisNode[]
   partialTemplate: { name: string }
-  partials: null
+  rootTemplate: null
 }
 
 type TemplateData = RootTemplateData | PartialTemplateData
