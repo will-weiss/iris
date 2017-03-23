@@ -1,0 +1,113 @@
+{{! This template outlines how individual nodes of the AST are compiled to JS expressions }}
+
+{{! Iris nodes are one of the following: linestart, newline, text, partial, variable, and section }}
+  {{! linestart: the start of a line }}
+  {{! newline: a line break }}
+  {{! text: static content in the template }}
+  {{! partialRef: a reference to another template }}
+  {{! variable: a value given by looking up a key in the current context }}
+  {{! section: a block conditionally rendered depending on looking up a key in the current context }}
+    {{! inverted: rendered once for falsy values and empty lists }}
+    {{! non-inverted: rendered once per item for non-empty lists and once for other truthy values }}
+  {{! partialTemplate: a partial template }}
+  {{! rootTemplate: a root template }}
+
+{{! move the cursor, if necessary, before each node }}
+{{> moveCursor}}
+
+{{! linestart nodes return the indentation level for partial templates }}
+{{#linestart}}
+  parent.appendChild(document.createTextNode(indentation));
+{{/linestart}}
+
+{{! newline nodes return a newline character }}
+{{#newline}}
+  parent.appendChild(document.createTextNode("\n"));
+{{/newline}}
+
+{{! text nodes return the quoted text value of the node }}
+{{#text}}
+  parent.appendChild(document.createTextNode({{{text}}}));
+{{/text}}
+
+{{! partialRef nodes return the result of the compiled function of that partial with the current context }}
+{{#partialRef}}
+  {{{name}}}(context, "{{{indentation}}}");
+{{/partialRef}}
+
+{{! For variable nodes, the cursor is moved to the location of the variable }}
+{{! Then the value of the  }}
+{{#variable}}
+  parent.appendChild(document.createTextNode((cursor == null ? "" : "" + cursor){{#escaped}}
+    .replace("&", "&amp;").replace('"', "&quot;").replace("<", "&lt;").replace(">", "&gt;")
+  {{/escaped}}));
+{{/variable}}
+
+{{#section}}
+  {{^inverted}}
+    (Array.isArray(cursor) ? cursor : (cursor ? [cursor] : [])).forEach(function(data) {
+      var cursor;
+      var context = data && typeof data === 'object' ? Object.assign(Object.create(this), data) : this;
+
+      {{#nodes}}
+        {{> nodeHTML}}
+      {{/nodes}}
+    }, context)
+  {{/inverted}}
+  {{#inverted}}
+    if (!cursor || cursor.length === 0) {
+      {{#nodes}}
+        {{> nodeHTML}}
+      {{/nodes}}
+    }
+  {{/inverted}}
+{{/section}}
+
+
+{{! This template is used to generate javascript functions from a given AST of iris nodes }}
+{{! The functions generated either represent the root template being compiled, or the template of a partial }}
+{{! Root templates are anonymous functions of a single argument: the data }}
+{{! Partial templates are named functions of a two arguments: the data and the indentation level }}
+{{! The partial templates of root templates appear in the closure of the compiled root template }}
+
+{{#element}}
+parent.appendChild((function() {
+  var parent = document.createElement("{{{tagName}}}");
+  {{#nodes}}
+    {{> nodeHTML}}
+  {{/nodes}}
+  return parent;
+})());
+{{/element}}
+
+{{#partialTemplate}}
+function {{{name}}}(data, indentation) {
+  var cursor;
+  var context = data;
+  var parent = document.createDocumentFragment();
+
+  {{#nodes}}
+    {{> nodeHTML}}
+  {{/nodes}}
+
+  return parent;
+}
+{{/partialTemplate}}
+
+{{#rootTemplate}}
+function(data) {
+  var cursor;
+  var context = data;
+  var parent = document.createDocumentFragment();
+
+  {{#nodes}}
+    {{> nodeHTML}}
+  {{/nodes}}
+
+  return parent;
+
+  {{#partialTemplates}}
+    {{> nodeHTML}}
+  {{/partialTemplates}}
+}
+{{/rootTemplate}}

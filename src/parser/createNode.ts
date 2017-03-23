@@ -1,10 +1,11 @@
 const irisNodeProto = {
-  linestart: false,
-  newline: false,
+  linestart: false as false,
+  newline: false as false,
   text: null, 
   partialRef: null,
   variable: null,
   section: null,
+  element: null,
   partialTemplate: null,
   rootTemplate: null,
   path: null,
@@ -23,12 +24,16 @@ export function partialRef(name: string, indentation: string): IrisPartialRefNod
   return { ...irisNodeProto, tag: 'partialRef', partialRef: { name, indentation } }
 }
 
+export function variable(keys: string[], escaped: boolean): IrisVariableNode {
+  return { ...irisNodeProto, tag: 'variable', path: { keys }, variable: { escaped } }
+}
+
 export function section(keys: string[], inverted: boolean, nodes: IrisNonTemplateNode[]): IrisSectionNode {
   return { ...irisNodeProto, tag: 'section', path: { keys }, section: { inverted }, nodes }
 }
 
-export function variable(keys: string[], escaped: boolean): IrisVariableNode {
-  return { ...irisNodeProto, tag: 'variable', path: { keys }, variable: { escaped } }
+export function element(tagName: string, nodes: IrisNonTemplateNode[]): IrisElementNode {
+  return { ...irisNodeProto, tag: 'element', element: { tagName }, nodes }
 }
 
 export function partialTemplate(name: string, nodes: IrisNonTemplateNode[]): IrisPartialTemplateNode {

@@ -3,8 +3,12 @@ import * as createNode from './createNode'
 
 
 export default function parse(template: string, ofPartial: boolean, partialNames: Set<string>): IrisNonTemplateNode[] {
-  const hoganNodes: HoganParsedNode[] = Hogan.parse(Hogan.scan(template))
+  const hoganNodes = hoganNodesOf(template)
   return irisNodesOf(hoganNodes, ofPartial, partialNames)
+}
+
+export function hoganNodesOf(template: string): HoganParsedNode[] {
+  return Hogan.parse(Hogan.scan(template))
 }
 
 function irisNodesOf(hoganNodes: HoganParsedNode[], ofPartial: boolean, partialNames: Set<string>): IrisNonTemplateNode[] {

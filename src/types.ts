@@ -13,27 +13,159 @@ type HoganNodeSection  = TaggedHoganNode<'#' | '^'> & { end: number, nodes: Hoga
 type HoganParsedNode =
   HoganNodeNewline | HoganNodeText | HoganNodeComment | HoganNodeVariable | HoganNodePartial | HoganNodeSection
 
+type HTMLNode =
+  { type: 'comment', raw: string, data: string } |
+  { type: 'text', raw: string, data: string } |
+  { type: 'tag', raw: string, data: string, name: string, children?: HTMLNode[], attribs?: { [name: string]: string } }
+
 interface IrisAnyNode {
-  linestart: boolean
-  newline: boolean
-  text: null | string
-  partialRef: null | { name: string, indentation: string }
-  variable: null | { escaped: boolean }
-  section: null | { inverted: boolean }
-  partialTemplate: null | { name: string }
-  rootTemplate: null | { partialTemplates: IrisPartialTemplateNode[] }
-  path: null | { keys: string[] }
-  nodes: null | IrisNonTemplateNode[]
+  linestart: false
+  newline: false
+  text: null
+  partialRef: null
+  variable: null
+  section: null
+  element: null
+  partialTemplate: null
+  rootTemplate: null
+  path: null
+  nodes: null
 }
 
-type IrisNewlineNode = IrisAnyNode & { tag: 'newline', newline: true }
-type IrisLinestartNode = IrisAnyNode & { tag: 'linestart', linestart: true }
-type IrisTextNode = IrisAnyNode & { tag: 'text', text: string }
-type IrisPartialRefNode = IrisAnyNode & { tag: 'partialRef', partialRef: { name: string, indentation: string } }
-type IrisVariableNode = IrisAnyNode & { tag: 'variable', variable: { escaped: boolean }, path: { keys: string[] } }
-type IrisSectionNode = IrisAnyNode & { tag: 'section', section: { inverted: boolean }, path: { keys: string[] }, nodes: IrisNode[] }
-type IrisPartialTemplateNode = IrisAnyNode & { tag: 'partialTemplate', partialTemplate: { name: string }, nodes: IrisNode[] }
-type IrisRootTemplateNode = IrisAnyNode & { tag: 'rootTemplate', rootTemplate: { partialTemplates: IrisPartialTemplateNode[] }, nodes: IrisNonTemplateNode[] }
+type IrisNewlineNode = {
+  tag: 'newline'
+  linestart: false
+  newline: true
+  text: null
+  partialRef: null
+  variable: null
+  section: null
+  element: null
+  partialTemplate: null
+  rootTemplate: null
+  path: null
+  nodes: null
+}
+
+type IrisLinestartNode = {
+  tag: 'linestart'
+  linestart: true
+  newline: false
+  text: null
+  partialRef: null
+  variable: null
+  section: null
+  element: null
+  partialTemplate: null
+  rootTemplate: null
+  path: null
+  nodes: null
+}
+
+type IrisTextNode = { 
+  tag: 'text'
+  linestart: false
+  newline: false
+  text: string
+  partialRef: null
+  variable: null
+  section: null
+  element: null
+  partialTemplate: null
+  rootTemplate: null
+  path: null
+  nodes: null
+}
+
+type IrisPartialRefNode = { 
+  tag: 'partialRef'
+  linestart: false
+  newline: false
+  text: null
+  partialRef: { name: string, indentation: string }
+  variable: null
+  section: null
+  element: null
+  partialTemplate: null
+  rootTemplate: null
+  path: null
+  nodes: null
+}
+
+type IrisVariableNode = { 
+  tag: 'variable'
+  linestart: false
+  newline: false
+  text: null
+  partialRef: null
+  variable: { escaped: boolean }
+  section: null
+  element: null
+  partialTemplate: null
+  rootTemplate: null
+  path: { keys: string[] }
+  nodes: null
+}
+
+type IrisSectionNode = { 
+  tag: 'section'
+  linestart: false
+  newline: false
+  text: null
+  partialRef: null
+  variable: null
+  section: { inverted: boolean }
+  element: null
+  partialTemplate: null
+  rootTemplate: null
+  path: { keys: string[] }
+  nodes: IrisNode[]
+}
+
+type IrisElementNode = { 
+  tag: 'element'
+  linestart: false
+  newline: false
+  text: null
+  partialRef: null
+  variable: null
+  section: null
+  element: { tagName: string }
+  partialTemplate: null
+  rootTemplate: null
+  path: null
+  nodes: IrisNode[]
+}
+
+type IrisPartialTemplateNode = { 
+  tag: 'partialTemplate'
+  linestart: false
+  newline: false
+  text: null
+  partialRef: null
+  variable: null
+  section: null
+  element: null
+  partialTemplate: { name: string }
+  rootTemplate: null
+  path: null
+  nodes: IrisNode[]
+}
+
+type IrisRootTemplateNode = { 
+  tag: 'rootTemplate'
+  linestart: false
+  newline: false
+  text: null
+  partialRef: null
+  variable: null
+  section: null
+  element: null
+  partialTemplate: null
+  rootTemplate: { partialTemplates: IrisPartialTemplateNode[] }
+  path: null
+  nodes: IrisNode[]
+}
 
 type IrisNonTemplateNode =
   IrisNewlineNode | IrisLinestartNode | IrisTextNode | IrisPartialRefNode | IrisVariableNode | IrisSectionNode
