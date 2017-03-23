@@ -9,7 +9,8 @@
   {{! section: a block conditionally rendered depending on looking up a key in the current context }}
     {{! inverted: rendered once for falsy values and empty lists }}
     {{! non-inverted: rendered once per item for non-empty lists and once for other truthy values }}
-
+  {{! partialTemplate: a partial template }}
+  {{! rootTemplate: a root template }}
 
 {{! linestart nodes return the indentation level for partial templates }}
 {{#linestart}}
@@ -53,3 +54,30 @@
       : "")
   {{/inverted}}
 {{/section}}
+
+
+{{! This template is used to generate javascript functions from a given AST of iris nodes }}
+{{! The functions generated either represent the root template being compiled, or the template of a partial }}
+{{! Root templates are anonymous functions of a single argument: the data }}
+{{! Partial templates are named functions of a two arguments: the data and the indentation level }}
+{{! The partial templates of root templates appear in the closure of the compiled root template }}
+
+{{#partialTemplate}}
+function {{{name}}}(data, indentation) {
+  var cursor;
+  var context = data;
+  return (""{{#nodes}} + ({{> moveCursor}} {{> node}}){{/nodes}});
+}
+{{/partialTemplate}}
+
+{{#rootTemplate}}
+function(data) {
+  var cursor;
+  var context = data;
+  return (""{{#nodes}} + ({{> moveCursor}} {{> node}}){{/nodes}});
+
+  {{#partialTemplates}}
+    {{> node}}
+  {{/partialTemplates}}
+}
+{{/rootTemplate}}
