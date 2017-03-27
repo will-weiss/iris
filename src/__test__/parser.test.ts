@@ -3,7 +3,7 @@ import { parseDOM } from '../parser'
 import parseHTML from '../parser/parseHTML'
 
 
-describe.only('parser', () => {
+describe.skip('parser', () => {
   it('works', () => {
     const template =
       `<ul>{{#items}}<li><h3 color={{color}}>{{text}}</h3><button>Click Me!</button></li>{{/items}}</ul>`

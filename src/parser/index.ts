@@ -10,7 +10,8 @@ function htmlOf(node: IrisNode, index: number): string {
 
     case 'variable':
       const { variable: { escaped }, path: { keys } } = node
-      const escapedHTML = `{{${keys.join('.')}}}`
+      const path = keys.length ? keys.join('.') : '.'
+      const escapedHTML = `{{${path}}}`
       return escaped ? escapedHTML : `{${escapedHTML}}`
 
     default:         

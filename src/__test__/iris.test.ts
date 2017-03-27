@@ -34,10 +34,10 @@ function testSpecAgainstHogan({ desc, data, template, expected, partials }: Must
 
 
 function testSpecAgainstIrisToDOM({ desc, data, template, expected, partials }: MustacheTestCase) {
-  const templatizedFunction = (new Function(`return ${irisToDOM(template, partials)}`))()
+  console.log(irisToDOM(template, partials))
   const { document } = jsdom('<html><body></body></html>').defaultView
-  const script = new Script(`element = templatizedFunction(data)`)
-  const context: any = { document, data, templatizedFunction }
+  const script = new Script(`element = (${irisToDOM(template, partials)})(data)`)
+  const context: any = { document, data }
   script.runInNewContext(context)
 
   // The text is equal to the outerHTML for elements and data for text nodes
@@ -47,6 +47,7 @@ function testSpecAgainstIrisToDOM({ desc, data, template, expected, partials }: 
 }
 
 function testSpecAgainstIrisToString({ desc, data, template, expected, partials }: MustacheTestCase) {
+
   const templatizedFunction = (new Function(`return ${irisToString(template, partials)}`))()
   const result = templatizedFunction(data)
   expect(result).to.equal(expected, desc)
@@ -55,18 +56,18 @@ function testSpecAgainstIrisToString({ desc, data, template, expected, partials 
 
 function* specGroups(): IterableIterator<[string, TestSpec]> {
 
-  yield ['comments', testSpecAgainstIrisToString]
-  yield ['interpolation', testSpecAgainstIrisToString]
-  yield ['sections', testSpecAgainstIrisToString]
-  yield ['inverted', testSpecAgainstIrisToString]
-  yield ['partials', testSpecAgainstIrisToString]
-  yield ['delimiters', testSpecAgainstIrisToString]
+  // yield ['comments', testSpecAgainstIrisToString]
+  // yield ['interpolation', testSpecAgainstIrisToString]
+  // yield ['sections', testSpecAgainstIrisToString]
+  // yield ['inverted', testSpecAgainstIrisToString]
+  // yield ['partials', testSpecAgainstIrisToString]
+  // yield ['delimiters', testSpecAgainstIrisToString]
 
   // yield ['comments', testSpecAgainstIrisToDOM]
   // yield ['interpolation', testSpecAgainstIrisToDOM]
   // yield ['sections', testSpecAgainstIrisToDOM]
   // yield ['inverted', testSpecAgainstIrisToDOM]
-  // yield ['partials', testSpecAgainstIrisToDOM]
+  yield ['partials', testSpecAgainstIrisToDOM]
   // yield ['delimiters', testSpecAgainstIrisToDOM]
 }
 
