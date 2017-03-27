@@ -1,6 +1,6 @@
 import templates from './templates'
 
-export default (data: IrisRootTemplateNode): string =>
+export const toString = (data: IrisRootTemplateNode): string =>
   templates.template.render(data, templates)
 
 export const toDOM = (data: IrisRootTemplateNode): string =>

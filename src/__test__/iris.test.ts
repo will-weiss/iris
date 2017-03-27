@@ -48,7 +48,6 @@ function testSpecAgainstIrisToDOM({ desc, data, template, expected, partials }: 
 
 function testSpecAgainstIrisToString({ desc, data, template, expected, partials }: MustacheTestCase) {
   const templatizedFunction = (new Function(`return ${irisToString(template, partials)}`))()
-  console.log(irisToString(template, partials))
   const result = templatizedFunction(data)
   expect(result).to.equal(expected, desc)
 }

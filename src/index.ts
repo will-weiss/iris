@@ -1,5 +1,5 @@
-import parse from './parser'
-import compile from './compiler'
+import { parseString, parseDOM } from './parser'
+import { toString, toDOM } from './compiler'
 import beautify = require('js-beautify')
 
 
@@ -12,6 +12,6 @@ export function irisToDOM(template: string, partials: PartialTemplateStrings = {
 }
 
 export function irisToString(template: string, partials: PartialTemplateStrings = {}) {
-  const data = parse(template, partials)
-  return beautify(compile(data), { preserve_newlines: false })
+  const data = parseString(template, partials)
+  return beautify(toString(data), { preserve_newlines: false })
 }

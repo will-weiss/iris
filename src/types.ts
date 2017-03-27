@@ -130,7 +130,7 @@ type IrisElementNode = {
   partialRef: null
   variable: null
   section: null
-  element: { tagName: string }
+  element: { tagName: string, attribs: { [name: string]: any } }
   partialTemplate: null
   rootTemplate: null
   path: null

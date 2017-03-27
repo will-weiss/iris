@@ -32,8 +32,8 @@ export function section(keys: string[], inverted: boolean, nodes: IrisNonTemplat
   return { ...irisNodeProto, tag: 'section', path: { keys }, section: { inverted }, nodes }
 }
 
-export function element(tagName: string, nodes: IrisNonTemplateNode[]): IrisElementNode {
-  return { ...irisNodeProto, tag: 'element', element: { tagName }, nodes }
+export function element(tagName: string, attribs: any, nodes: IrisNonTemplateNode[]): IrisElementNode {
+  return { ...irisNodeProto, tag: 'element', element: { tagName, attribs }, nodes }
 }
 
 export function partialTemplate(name: string, nodes: IrisNonTemplateNode[]): IrisPartialTemplateNode {
