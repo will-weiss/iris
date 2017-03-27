@@ -14,7 +14,7 @@ type HoganParsedNode =
   HoganNodeNewline | HoganNodeText | HoganNodeComment | HoganNodeVariable | HoganNodePartial | HoganNodeSection
 
 type HTMLNode =
-  { type: 'comment', raw: string, data: string } |
+  { type: 'directive', raw: string, data: string } |
   { type: 'text', raw: string, data: string } |
   { type: 'tag', raw: string, data: string, name: string, children?: HTMLNode[], attribs?: { [name: string]: string } }
 
@@ -92,7 +92,7 @@ type IrisPartialRefNode = {
   nodes: null
 }
 
-type IrisVariableNode = { 
+type IrisVariableNode = {
   tag: 'variable'
   linestart: false
   newline: false
@@ -174,7 +174,7 @@ type IrisTemplateNode =
   IrisPartialTemplateNode | IrisRootTemplateNode
 
 type IrisNode =
-  IrisNonTemplateNode | IrisTemplateNode
+  IrisNonTemplateNode | IrisTemplateNode | IrisElementNode
 
 type TemplateString = string
 

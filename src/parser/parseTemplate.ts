@@ -2,7 +2,7 @@ const Hogan = require('hogan.js')
 import * as createNode from './createNode'
 
 
-export default function parse(template: string, ofPartial: boolean, partialNames: Set<string>): IrisNonTemplateNode[] {
+export default function parseTemplate(template: string, ofPartial: boolean, partialNames: Set<string>): IrisNonTemplateNode[] {
   const hoganNodes = hoganNodesOf(template)
   return irisNodesOf(hoganNodes, ofPartial, partialNames)
 }
