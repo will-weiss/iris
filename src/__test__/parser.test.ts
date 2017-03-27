@@ -16,5 +16,6 @@ describe.only('parser', () => {
     expect(parsed).to.have.property('tag', 'rootTemplate')
     expect(parsed).to.have.property('nodes').that.has.length(1)
     expect(parsed.nodes[0]).to.have.property('tag', 'element')
+    console.log(JSON.stringify(parsed, null, 2))
   })
 })

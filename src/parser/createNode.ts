@@ -28,18 +28,18 @@ export function variable(keys: string[], escaped: boolean): IrisVariableNode {
   return { ...irisNodeProto, tag: 'variable', path: { keys }, variable: { escaped } }
 }
 
-export function section(keys: string[], inverted: boolean, nodes: IrisNonTemplateNode[]): IrisSectionNode {
+export function section(keys: string[], inverted: boolean, nodes: IrisNode[]): IrisSectionNode {
   return { ...irisNodeProto, tag: 'section', path: { keys }, section: { inverted }, nodes }
 }
 
-export function element(tagName: string, attribs: any, nodes: IrisNonTemplateNode[]): IrisElementNode {
+export function element(tagName: string, attribs: any[], nodes: IrisNode[]): IrisElementNode {
   return { ...irisNodeProto, tag: 'element', element: { tagName, attribs }, nodes }
 }
 
-export function partialTemplate(name: string, nodes: IrisNonTemplateNode[]): IrisPartialTemplateNode {
+export function partialTemplate(name: string, nodes: IrisNode[]): IrisPartialTemplateNode {
   return { ...irisNodeProto, tag: 'partialTemplate', partialTemplate: { name }, nodes }
 }
 
-export function rootTemplate(partialTemplates: IrisPartialTemplateNode[], nodes: IrisNonTemplateNode[]): IrisRootTemplateNode {
+export function rootTemplate(partialTemplates: IrisPartialTemplateNode[], nodes: IrisNode[]): IrisRootTemplateNode {
   return { ...irisNodeProto, tag: 'rootTemplate', rootTemplate: { partialTemplates }, nodes }
 }
