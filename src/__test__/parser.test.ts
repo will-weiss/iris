@@ -22,27 +22,34 @@ describe('parser', () => {
     expect(parsed.nodes).to.have.length(2)
   })
 
-  // describe.only('extractElementsFrom', () => {
+  describe('extractElementsFrom', () => {
 
-  //   it('extracts elements from iris nodes with children', () => {
+    it('extracts elements from iris nodes with children', () => {
 
-  //     const rootTemplate = createNode.rootTemplate([], [
-  //       createNode.text('Hello <a>'),
-  //       createNode.variable(['name'], true),
-  //       createNode.text('</a> World'),
-  //     ])
+      const rootTemplate = createNode.rootTemplate({
+        nodes: [
+          createNode.text({ raw: 'Hello <a>' }),
+          createNode.variable({ path: 'name' }),
+          createNode.text({ raw: '</a> World' }),
+        ]
+      })
 
-  //     const extracted = extractElementsFrom(rootTemplate)
+      const extracted = extractElementsFrom(rootTemplate)
 
-  //     const expected = createNode.section(['foo', 'bar'], false, [
-  //       createNode.text('Hello '),
-  //       createNode.element('a', [], [
-  //         createNode.variable(['name'], true),
-  //       ]),
-  //       createNode.text(' World'),
-  //     ])
+      const expected = createNode.rootTemplate({
+        nodes: [
+          createNode.text({ raw: 'Hello ' }),
+          createNode.element({
+            tagName: 'a',
+            nodes: [
+              createNode.variable({ path: 'name' }),
+            ]
+          }),
+          createNode.text({ raw: ' World' }),
+        ]
+      })
 
-  //     expect(extracted).to.deep.equal(expected)
-  //   })
-  // })
+      expect(extracted).to.deep.equal(expected)
+    })
+  })
 })
