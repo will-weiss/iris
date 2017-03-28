@@ -51,9 +51,15 @@ function extractElementsFrom(node: IrisNode): IrisNode {
   const html: string = originalNodes.reduce((html, node, index) => html + htmlOf(node, index), '')
   const parsedHTML = parseHTML(html)
   const nodes = Array.from(walk(originalNodes, parsedHTML))
+
+  // Yuck
+  if (nodes.length < originalNodes.length && html.slice(0, 1) === '>') {
+    nodes.unshift(createNode.text('">"'))
+  }
   if (nodes.length < originalNodes.length && html.slice(-2) === '>>') {
     nodes.push(createNode.text('">"'))
   }
+
   return { ...node, nodes } as any
 }
 

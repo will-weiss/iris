@@ -43,12 +43,12 @@ function testSpecAgainstIrisToDOM({ name, desc, data, template, expected, partia
   // The text is equal to the outerHTML for elements and data for text nodes
   const text = context.element.outerHTML || context.element.data || context.element.textContent
 
-  if (name === 'Failed Lookup') {
+  if (name === 'Standalone Without Newline') {
     console.log(template)
     console.log(data)
-    console.log(expected)
+    console.log(JSON.stringify(expected))
     console.log(irisToDOM(template, partials))
-    console.log(text)
+    console.log(JSON.stringify(text))
   }
 
   expect(text).to.equal(expected, desc)
@@ -76,7 +76,7 @@ function* specGroups(): IterableIterator<[string, TestSpec]> {
   yield ['sections', testSpecAgainstIrisToDOM]
   yield ['inverted', testSpecAgainstIrisToDOM]
   yield ['partials', testSpecAgainstIrisToDOM]
-  // yield ['delimiters', testSpecAgainstIrisToDOM]
+  yield ['delimiters', testSpecAgainstIrisToDOM]
 }
 
 
