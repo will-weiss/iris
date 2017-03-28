@@ -38,9 +38,9 @@
 {{! For variable nodes, the cursor is moved to the location of the variable }}
 {{! Then the value of the  }}
 {{#variable}}
-  (cursor == null ? "" : "" + cursor){{#escaped}}
+  (cursor == null ? "" : "" + cursor){{^unescaped}}
     .replace("&", "&amp;").replace('"', "&quot;").replace("<", "&lt;").replace(">", "&gt;")
-  {{/escaped}}
+  {{/unescaped}}
 {{/variable}}
 
 {{#section}}

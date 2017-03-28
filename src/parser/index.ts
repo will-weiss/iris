@@ -9,10 +9,10 @@ function htmlOf(node: IrisNode, index: number): string {
       return node.text.raw
 
     case 'variable':
-      const { variable: { escaped }, path: { keys } } = node
+      const { variable: { unescaped }, path: { keys } } = node
       const path = keys.length ? keys.join('.') : '.'
       const escapedHTML = `{{${path}}}`
-      return escaped ? escapedHTML : `{${escapedHTML}}`
+      return unescaped ? `{${escapedHTML}}` : escapedHTML
 
     default:
       return `<!–– iris: ${index} -->`
@@ -28,10 +28,10 @@ function* walk(originalNodes: IrisNode[], htmlNodes: HTMLNode[]): IterableIterat
         break
       }
       case 'tag': {
-        const { attribs, children } = htmlNode
+        const { name: tagName, attribs, children } = htmlNode
         const attributes = attribs ? Object.keys(attribs).map(name => ({ name, value: attribs[name] })) : []
         const nodes = Array.from(walk(originalNodes, htmlNode.children!))
-        yield createNode.element(htmlNode.name, attributes, nodes)
+        yield createNode.element({ tagName, attributes, nodes })
         break
       }
       case 'directive': {
@@ -45,7 +45,7 @@ function* walk(originalNodes: IrisNode[], htmlNodes: HTMLNode[]): IterableIterat
   }
 }
 
-function extractElementsFrom(node: IrisNode): IrisNode {
+export function extractElementsFrom(node: IrisNode): IrisNode {
   if (node.nodes == null) return node
   const originalNodes: IrisNode[] = node.nodes.map(extractElementsFrom)
   const html: string = originalNodes.reduce((html, node, index) => html + htmlOf(node, index), '')
@@ -54,11 +54,11 @@ function extractElementsFrom(node: IrisNode): IrisNode {
 
   // Yuck
   if (nodes.length < originalNodes.length && html.slice(0, 1) === '>') {
-    nodes.unshift(createNode.text('">"'))
+    nodes.unshift(createNode.text({ raw: '">"' }))
   }
 
   if (nodes.length < originalNodes.length && html.slice(-2) === '>>') {
-    nodes.push(createNode.text('">"'))
+    nodes.push(createNode.text({ raw: '">"' }))
   }
 
   return { ...node, nodes } as any
@@ -75,7 +75,12 @@ export function parseString(template: string, partials: PartialTemplateStrings =
   const partialNames = new Set(Object.keys(partials))
 
   const partialTemplates = Object.keys(partials).map(name =>
-    createNode.partialTemplate(name, parseTemplate(partials[name], true, partialNames)))
+    createNode.partialTemplate({
+      name,
+      nodes: parseTemplate(partials[name], true, partialNames)
+    }))
 
-  return createNode.rootTemplate(partialTemplates, parseTemplate(template, false, partialNames))
+  const nodes = parseTemplate(template, false, partialNames)
+
+  return createNode.rootTemplate({ partialTemplates, nodes })
 }

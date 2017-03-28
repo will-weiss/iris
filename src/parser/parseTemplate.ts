@@ -37,25 +37,38 @@ function* linesOf(hoganNodes: HoganParsedNode[], ofPartial: boolean, partialName
   }
 }
 
-function irisNodeOf(node: HoganParsedNode, ofPartial: boolean, partialNames: Set<string>): IrisNonTemplateNode | undefined {
+function irisNodeOf(node: HoganParsedNode, ofPartial: boolean, partialNames: Set<string>): IrisNonTemplateNode | Falsy {
   switch (node.tag) {
-    case '\n':
+
+    case '\n': {
       return createNode.newline
+    }
 
-    case '_t':
-      return createNode.text('' + node.text)
+    case '_t': {
+      return createNode.text({
+        raw: '' + node.text
+      })
+    }
 
-    case '>':
-      return partialNames.has(node.n) ? createNode.partialRef(node.n, node.indent || '') : undefined
+    case '>': {
+      return partialNames.has(node.n) && createNode.partialRef({
+        name: node.n,
+        indentation: node.indent
+      })
+    }
 
-    case '#': case '^':
-      return createNode.section(keys(node.n), node.tag !== '#', irisNodesOf(node.nodes, ofPartial, partialNames))
+    case '#': case '^': {
+      return createNode.section({
+        path: node.n,
+        inverted: node.tag !== '#',
+        nodes: irisNodesOf(node.nodes, ofPartial, partialNames)
+      })
+    }
 
     case '&': case '{': case '_v':
-      return createNode.variable(keys(node.n), node.tag === '_v')
+      return createNode.variable({
+        path: node.n,
+        unescaped: node.tag !== '_v',
+      })
   }
-}
-
-function keys(str: string) {
-  return str === '.' ? [] : str.split('.')
 }

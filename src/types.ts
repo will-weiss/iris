@@ -98,12 +98,12 @@ type IrisVariableNode = {
   newline: false
   text: null
   partialRef: null
-  variable: { escaped: boolean }
+  variable: { unescaped: boolean }
   section: null
   element: null
   partialTemplate: null
   rootTemplate: null
-  path: { keys: string[] }
+  path: { raw: string, keys: string[] }
   nodes: null
 }
 
@@ -118,7 +118,7 @@ type IrisSectionNode = {
   element: null
   partialTemplate: null
   rootTemplate: null
-  path: { keys: string[] }
+  path: { raw: string, keys: string[] }
   nodes: IrisNode[]
 }
 
@@ -130,7 +130,7 @@ type IrisElementNode = {
   partialRef: null
   variable: null
   section: null
-  element: { tagName: string, attribs: any[] }
+  element: { tagName: string, attributes: any[] }
   partialTemplate: null
   rootTemplate: null
   path: null

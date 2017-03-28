@@ -12,34 +12,39 @@ const irisNodeProto = {
   nodes: null,
 }
 
+
+function keys(path: string) {
+  return path === '.' ? [] : path.split('.')
+}
+
 export const linestart: IrisLinestartNode = { ...irisNodeProto, tag: 'linestart', linestart: true }
 
 export const newline: IrisNewlineNode = { ...irisNodeProto, tag: 'newline', newline: true }
 
-export function text(raw: string): IrisTextNode {
+export function text({ raw }: { raw: string }): IrisTextNode {
   return { ...irisNodeProto, tag: 'text', text: { raw, formatted: JSON.stringify(raw) } }
 }
 
-export function partialRef(name: string, indentation: string): IrisPartialRefNode {
+export function partialRef({ name, indentation = '' }: { name: string, indentation?: string }): IrisPartialRefNode {
   return { ...irisNodeProto, tag: 'partialRef', partialRef: { name, indentation } }
 }
 
-export function variable(keys: string[], escaped: boolean): IrisVariableNode {
-  return { ...irisNodeProto, tag: 'variable', path: { keys }, variable: { escaped } }
+export function variable({ path, unescaped = false }: { path: string, unescaped?: boolean }): IrisVariableNode {
+  return { ...irisNodeProto, tag: 'variable', path: { raw: path, keys: keys(path) }, variable: { unescaped } }
 }
 
-export function section(keys: string[], inverted: boolean, nodes: IrisNode[]): IrisSectionNode {
-  return { ...irisNodeProto, tag: 'section', path: { keys }, section: { inverted }, nodes }
+export function section({ path, nodes, inverted = false }: { path: string, nodes: IrisNode[], inverted?: boolean }): IrisSectionNode {
+  return { ...irisNodeProto, tag: 'section', path: { raw: path, keys: keys(path) }, section: { inverted }, nodes }
 }
 
-export function element(tagName: string, attribs: any[], nodes: IrisNode[]): IrisElementNode {
-  return { ...irisNodeProto, tag: 'element', element: { tagName, attribs }, nodes }
+export function element({ tagName, attributes, nodes }: { tagName: string, attributes: any[], nodes: IrisNode[] }): IrisElementNode {
+  return { ...irisNodeProto, tag: 'element', element: { tagName, attributes }, nodes }
 }
 
-export function partialTemplate(name: string, nodes: IrisNode[]): IrisPartialTemplateNode {
+export function partialTemplate({ name, nodes }: { name: string, nodes: IrisNode[] }): IrisPartialTemplateNode {
   return { ...irisNodeProto, tag: 'partialTemplate', partialTemplate: { name }, nodes }
 }
 
-export function rootTemplate(partialTemplates: IrisPartialTemplateNode[], nodes: IrisNode[]): IrisRootTemplateNode {
+export function rootTemplate({ partialTemplates, nodes }: { partialTemplates: IrisPartialTemplateNode[], nodes: IrisNode[] }): IrisRootTemplateNode {
   return { ...irisNodeProto, tag: 'rootTemplate', rootTemplate: { partialTemplates }, nodes }
 }

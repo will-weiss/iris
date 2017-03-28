@@ -38,9 +38,9 @@
 {{! For variable nodes, the cursor is moved to the location of the variable }}
 {{! Then the value of the  }}
 {{#variable}}
-  parent.appendChild(document.createTextNode((cursor == null ? "" : "" + cursor){{#escaped}}
+  parent.appendChild(document.createTextNode((cursor == null ? "" : "" + cursor){{^unescaped}}
     .replace("&", "&amp;").replace('"', "&quot;").replace("<", "&lt;").replace(">", "&gt;")
-  {{/escaped}}));
+  {{/unescaped}}));
 {{/variable}}
 
 {{#section}}
