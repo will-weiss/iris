@@ -20,6 +20,7 @@ function htmlOf(node: IrisNode, index: number): string {
 }
 
 function* walk(originalNodes: IrisNode[], htmlNodes: HTMLNode[]): IterableIterator<IrisNode> {
+
   for (const htmlNode of htmlNodes) {
     switch (htmlNode.type) {
       case 'text': {
@@ -50,6 +51,9 @@ function extractElementsFrom(node: IrisNode): IrisNode {
   const html: string = originalNodes.reduce((html, node, index) => html + htmlOf(node, index), '')
   const parsedHTML = parseHTML(html)
   const nodes = Array.from(walk(originalNodes, parsedHTML))
+  if (nodes.length < originalNodes.length && html.slice(-2) === '>>') {
+    nodes.push(createNode.text('">"'))
+  }
   return { ...node, nodes } as any
 }
 
