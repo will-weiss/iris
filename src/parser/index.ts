@@ -14,7 +14,7 @@ function htmlOf(node: IrisNode, index: number): string {
       const escapedHTML = `{{${path}}}`
       return escaped ? escapedHTML : `{${escapedHTML}}`
 
-    default:         
+    default:
       return `<!–– iris: ${index} -->`
   }
 }

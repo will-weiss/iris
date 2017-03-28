@@ -33,8 +33,8 @@ function testSpecAgainstHogan({ desc, data, template, expected, partials }: Must
 }
 
 
-function testSpecAgainstIrisToDOM({ desc, data, template, expected, partials }: MustacheTestCase) {
-  console.log(irisToDOM(template, partials))
+function testSpecAgainstIrisToDOM({ name, desc, data, template, expected, partials }: MustacheTestCase) {
+
   const { document } = jsdom('<html><body></body></html>').defaultView
   const script = new Script(`element = (${irisToDOM(template, partials)})(data)`)
   const context: any = { document, data }
@@ -42,6 +42,14 @@ function testSpecAgainstIrisToDOM({ desc, data, template, expected, partials }: 
 
   // The text is equal to the outerHTML for elements and data for text nodes
   const text = context.element.outerHTML || context.element.data || context.element.textContent
+
+  if (name === 'Failed Lookup') {
+    console.log(template)
+    console.log(data)
+    console.log(expected)
+    console.log(irisToDOM(template, partials))
+    console.log(text)
+  }
 
   expect(text).to.equal(expected, desc)
 }
@@ -63,10 +71,10 @@ function* specGroups(): IterableIterator<[string, TestSpec]> {
   // yield ['partials', testSpecAgainstIrisToString]
   // yield ['delimiters', testSpecAgainstIrisToString]
 
-  // yield ['comments', testSpecAgainstIrisToDOM]
-  // yield ['interpolation', testSpecAgainstIrisToDOM]
-  // yield ['sections', testSpecAgainstIrisToDOM]
-  // yield ['inverted', testSpecAgainstIrisToDOM]
+  yield ['comments', testSpecAgainstIrisToDOM]
+  yield ['interpolation', testSpecAgainstIrisToDOM]
+  yield ['sections', testSpecAgainstIrisToDOM]
+  yield ['inverted', testSpecAgainstIrisToDOM]
   yield ['partials', testSpecAgainstIrisToDOM]
   // yield ['delimiters', testSpecAgainstIrisToDOM]
 }

@@ -32,7 +32,7 @@
 
 {{! partialRef nodes return the result of the compiled function of that partial with the current context }}
 {{#partialRef}}
-  parent.appendChild({{{name}}}(context, "{{{indentation}}}"));
+  {{{name}}}(context, "{{{indentation}}}");
 {{/partialRef}}
 
 {{! For variable nodes, the cursor is moved to the location of the variable }}
@@ -86,13 +86,10 @@ parent.appendChild((function() {
 function {{{name}}}(data, indentation) {
   var cursor;
   var context = data;
-  var parent = document.createDocumentFragment();
 
   {{#nodes}}
     {{> nodeHTML}}
   {{/nodes}}
-
-  return parent;
 }
 {{/partialTemplate}}
 
