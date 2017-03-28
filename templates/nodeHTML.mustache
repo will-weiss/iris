@@ -27,7 +27,7 @@
 
 {{! text nodes return the quoted text value of the node }}
 {{#text}}
-  parent.appendChild(document.createTextNode({{{text}}}));
+  parent.appendChild(document.createTextNode({{{formatted}}}));
 {{/text}}
 
 {{! partialRef nodes return the result of the compiled function of that partial with the current context }}

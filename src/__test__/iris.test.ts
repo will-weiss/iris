@@ -43,7 +43,7 @@ function testSpecAgainstIrisToDOM({ name, desc, data, template, expected, partia
   // The text is equal to the outerHTML for elements and data for text nodes
   const text = context.element.outerHTML || context.element.data || context.element.textContent
 
-  if (name === 'Standalone Without Newline') {
+  if (name === 'Sections') {
     console.log(template)
     console.log(data)
     console.log(JSON.stringify(expected))
@@ -64,19 +64,19 @@ function testSpecAgainstIrisToString({ desc, data, template, expected, partials 
 
 function* specGroups(): IterableIterator<[string, TestSpec]> {
 
-  // yield ['comments', testSpecAgainstIrisToString]
-  // yield ['interpolation', testSpecAgainstIrisToString]
-  // yield ['sections', testSpecAgainstIrisToString]
-  // yield ['inverted', testSpecAgainstIrisToString]
-  // yield ['partials', testSpecAgainstIrisToString]
-  // yield ['delimiters', testSpecAgainstIrisToString]
+  yield ['comments', testSpecAgainstIrisToString]
+  yield ['interpolation', testSpecAgainstIrisToString]
+  yield ['sections', testSpecAgainstIrisToString]
+  yield ['inverted', testSpecAgainstIrisToString]
+  yield ['partials', testSpecAgainstIrisToString]
+  yield ['delimiters', testSpecAgainstIrisToString]
 
-  yield ['comments', testSpecAgainstIrisToDOM]
-  yield ['interpolation', testSpecAgainstIrisToDOM]
-  yield ['sections', testSpecAgainstIrisToDOM]
-  yield ['inverted', testSpecAgainstIrisToDOM]
-  yield ['partials', testSpecAgainstIrisToDOM]
-  yield ['delimiters', testSpecAgainstIrisToDOM]
+  // yield ['comments', testSpecAgainstIrisToDOM]
+  // yield ['interpolation', testSpecAgainstIrisToDOM]
+  // yield ['sections', testSpecAgainstIrisToDOM]
+  // yield ['inverted', testSpecAgainstIrisToDOM]
+  // yield ['partials', testSpecAgainstIrisToDOM]
+  // yield ['delimiters', testSpecAgainstIrisToDOM]
 }
 
 

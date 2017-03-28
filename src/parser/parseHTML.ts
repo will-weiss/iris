@@ -7,4 +7,3 @@ export default function parseHTML(html: string): HTMLNode[] {
   parser.parseComplete(html)
   return handler.dom
 }
-

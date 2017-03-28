@@ -16,8 +16,8 @@ export const linestart: IrisLinestartNode = { ...irisNodeProto, tag: 'linestart'
 
 export const newline: IrisNewlineNode = { ...irisNodeProto, tag: 'newline', newline: true }
 
-export function text(text: string): IrisTextNode {
-  return { ...irisNodeProto, tag: 'text', text }
+export function text(raw: string): IrisTextNode {
+  return { ...irisNodeProto, tag: 'text', text: { raw, formatted: JSON.stringify(raw) } }
 }
 
 export function partialRef(name: string, indentation: string): IrisPartialRefNode {

@@ -66,7 +66,7 @@ type IrisTextNode = {
   tag: 'text'
   linestart: false
   newline: false
-  text: string
+  text: { raw: string, formatted: string }
   partialRef: null
   variable: null
   section: null

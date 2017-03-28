@@ -43,7 +43,7 @@ function irisNodeOf(node: HoganParsedNode, ofPartial: boolean, partialNames: Set
       return createNode.newline
 
     case '_t':
-      return createNode.text(JSON.stringify('' + node.text))
+      return createNode.text('' + node.text)
 
     case '>':
       return partialNames.has(node.n) ? createNode.partialRef(node.n, node.indent || '') : undefined

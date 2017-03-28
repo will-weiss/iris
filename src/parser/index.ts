@@ -6,7 +6,7 @@ import parseHTML from './parseHTML'
 function htmlOf(node: IrisNode, index: number): string {
   switch (node.tag) {
     case 'text':
-      return JSON.parse(node.text)
+      return node.text.raw
 
     case 'variable':
       const { variable: { escaped }, path: { keys } } = node
@@ -56,6 +56,7 @@ function extractElementsFrom(node: IrisNode): IrisNode {
   if (nodes.length < originalNodes.length && html.slice(0, 1) === '>') {
     nodes.unshift(createNode.text('">"'))
   }
+
   if (nodes.length < originalNodes.length && html.slice(-2) === '>>') {
     nodes.push(createNode.text('">"'))
   }
