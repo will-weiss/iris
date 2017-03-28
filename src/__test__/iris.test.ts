@@ -43,14 +43,6 @@ function testSpecAgainstIrisToDOM({ name, desc, data, template, expected, partia
   // The text is equal to the outerHTML for elements and data for text nodes
   const text = context.element.outerHTML || context.element.data || context.element.textContent
 
-  if (name === 'Sections') {
-    console.log(template)
-    console.log(data)
-    console.log(JSON.stringify(expected))
-    console.log(irisToDOM(template, partials))
-    console.log(JSON.stringify(text))
-  }
-
   expect(text).to.equal(expected, desc)
 }
 
@@ -71,12 +63,12 @@ function* specGroups(): IterableIterator<[string, TestSpec]> {
   yield ['partials', testSpecAgainstIrisToString]
   yield ['delimiters', testSpecAgainstIrisToString]
 
-  // yield ['comments', testSpecAgainstIrisToDOM]
-  // yield ['interpolation', testSpecAgainstIrisToDOM]
-  // yield ['sections', testSpecAgainstIrisToDOM]
-  // yield ['inverted', testSpecAgainstIrisToDOM]
-  // yield ['partials', testSpecAgainstIrisToDOM]
-  // yield ['delimiters', testSpecAgainstIrisToDOM]
+  yield ['comments', testSpecAgainstIrisToDOM]
+  yield ['interpolation', testSpecAgainstIrisToDOM]
+  yield ['sections', testSpecAgainstIrisToDOM]
+  yield ['inverted', testSpecAgainstIrisToDOM]
+  yield ['partials', testSpecAgainstIrisToDOM]
+  yield ['delimiters', testSpecAgainstIrisToDOM]
 }
 
 

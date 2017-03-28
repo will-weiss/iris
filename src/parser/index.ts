@@ -8,29 +8,22 @@ function htmlOf(node: IrisNode, index: number): string {
     case 'text':
       return node.text.raw
 
-    case 'variable':
-      const { variable: { unescaped }, path: { keys } } = node
-      const path = keys.length ? keys.join('.') : '.'
-      const escapedHTML = `{{${path}}}`
-      return unescaped ? `{${escapedHTML}}` : escapedHTML
-
     default:
       return `<!–– iris: ${index} -->`
   }
 }
 
-function* walk(originalNodes: IrisNode[], htmlNodes: HTMLNode[]): IterableIterator<IrisNode> {
-
+function* walk(originalChildren: IrisNode[], htmlNodes: HTMLNode[]): IterableIterator<IrisNode> {
   for (const htmlNode of htmlNodes) {
     switch (htmlNode.type) {
       case 'text': {
-        yield * parseTemplate(htmlNode.raw, false, new Set())
+        yield createNode.text({ raw: htmlNode.raw })
         break
       }
       case 'tag': {
         const { name: tagName, attribs } = htmlNode
         const attributes = attribs ? Object.keys(attribs).map(name => ({ name, value: attribs[name] })) : []
-        const children = Array.from(walk(originalNodes, htmlNode.children!))
+        const children = Array.from(walk(originalChildren, htmlNode.children!))
         yield createNode.element({ tagName, attributes, children })
         break
       }
@@ -38,7 +31,7 @@ function* walk(originalNodes: IrisNode[], htmlNodes: HTMLNode[]): IterableIterat
         const match = htmlNode.data.match(/iris: (\d+)/)
         if (match) {
           const id = Number(match[1])
-          yield originalNodes[id]
+          yield originalChildren[id]
         }
       }
     }
@@ -47,24 +40,26 @@ function* walk(originalNodes: IrisNode[], htmlNodes: HTMLNode[]): IterableIterat
 
 export function extractElementsFrom(node: IrisNode): IrisNode {
   if (node.children == null) return node
-  const originalNodes: IrisNode[] = node.children.map(extractElementsFrom)
-  const html: string = originalNodes.reduce((html, node, index) => html + htmlOf(node, index), '')
+
+  const originalChildren: IrisNode[] = node.children.map(extractElementsFrom)
+
+  const html: string = originalChildren.reduce((html, node, index) => html + htmlOf(node, index), '')
+
   const parsedHTML = parseHTML(html)
-  const children = Array.from(walk(originalNodes, parsedHTML))
+
+  const children = Array.from(walk(originalChildren, parsedHTML))
 
   // Yuck
-  if (children.length < originalNodes.length && html.slice(0, 1) === '>') {
-    children.unshift(createNode.text({ raw: '">"' }))
+  if (children.length < originalChildren.length && html.slice(0, 1) === '>') {
+    children.unshift(createNode.text({ raw: '>' }))
   }
 
-  if (children.length < originalNodes.length && html.slice(-2) === '>>') {
-    children.push(createNode.text({ raw: '">"' }))
+  if (children.length < originalChildren.length && html.slice(-2) === '>>') {
+    children.push(createNode.text({ raw: '>' }))
   }
 
   return { ...node, children } as any
 }
-
-
 
 export function parseDOM(template: string, partials: PartialTemplateStrings = {}): IrisRootTemplateNode {
   const rootTemplate = parseString(template, partials)

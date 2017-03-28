@@ -39,7 +39,6 @@ function* linesOf(hoganNodes: HoganParsedNode[], ofPartial: boolean, partialName
 
 function irisNodeOf(node: HoganParsedNode, ofPartial: boolean, partialNames: Set<string>): IrisNonTemplateNode | Falsy {
   switch (node.tag) {
-
     case '\n': {
       return createNode.newline
     }

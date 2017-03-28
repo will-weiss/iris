@@ -62,7 +62,7 @@ type IrisLinestartNode = {
   children: null
 }
 
-type IrisTextNode = { 
+type IrisTextNode = {
   tag: 'text'
   linestart: false
   newline: false

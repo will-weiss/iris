@@ -5,16 +5,6 @@ import parseHTML from '../parser/parseHTML'
 
 
 describe('parser', () => {
-  // it('works', () => {
-  //   const template =
-  //     `<ul>{{#items}}<li><h3 color={{color}}>{{text}}</h3><button>Click Me!</button></li>{{/items}}</ul>`
-
-  //   const parsed = parseDOM(template)
-
-  //   expect(parsed).to.have.property('tag', 'rootTemplate')
-  //   expect(parsed).to.have.property('nodes').that.has.length(1)
-  //   expect(parsed.nodes[0]).to.have.property('tag', 'element')
-  // })
 
   it('handles weirdo partials', () => {
     const template = `  {{>partial}}\n>`
@@ -28,6 +18,7 @@ describe('parser', () => {
 
       const rootTemplate = createNode.rootTemplate({
         children: [
+          createNode.variable({ path: 'foo' }),
           createNode.text({ raw: 'Hello <a>' }),
           createNode.variable({ path: 'name' }),
           createNode.text({ raw: '</a> World' }),
@@ -38,6 +29,7 @@ describe('parser', () => {
 
       const expected = createNode.rootTemplate({
         children: [
+          createNode.variable({ path: 'foo' }),
           createNode.text({ raw: 'Hello ' }),
           createNode.element({
             tagName: 'a',
