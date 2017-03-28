@@ -19,7 +19,7 @@ describe('parser', () => {
   it('handles weirdo partials', () => {
     const template = `  {{>partial}}\n>`
     const parsed = parseDOM(template, { partial: '>\n>' })
-    expect(parsed.nodes).to.have.length(2)
+    expect(parsed.children).to.have.length(2)
   })
 
   describe('extractElementsFrom', () => {
@@ -27,7 +27,7 @@ describe('parser', () => {
     it('extracts elements from iris nodes with children', () => {
 
       const rootTemplate = createNode.rootTemplate({
-        nodes: [
+        children: [
           createNode.text({ raw: 'Hello <a>' }),
           createNode.variable({ path: 'name' }),
           createNode.text({ raw: '</a> World' }),
@@ -37,11 +37,11 @@ describe('parser', () => {
       const extracted = extractElementsFrom(rootTemplate)
 
       const expected = createNode.rootTemplate({
-        nodes: [
+        children: [
           createNode.text({ raw: 'Hello ' }),
           createNode.element({
             tagName: 'a',
-            nodes: [
+            children: [
               createNode.variable({ path: 'name' }),
             ]
           }),

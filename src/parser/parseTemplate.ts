@@ -61,7 +61,7 @@ function irisNodeOf(node: HoganParsedNode, ofPartial: boolean, partialNames: Set
       return createNode.section({
         path: node.n,
         inverted: node.tag !== '#',
-        nodes: irisNodesOf(node.nodes, ofPartial, partialNames)
+        children: irisNodesOf(node.nodes, ofPartial, partialNames)
       })
     }
 

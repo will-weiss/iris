@@ -28,10 +28,10 @@ function* walk(originalNodes: IrisNode[], htmlNodes: HTMLNode[]): IterableIterat
         break
       }
       case 'tag': {
-        const { name: tagName, attribs, children } = htmlNode
+        const { name: tagName, attribs } = htmlNode
         const attributes = attribs ? Object.keys(attribs).map(name => ({ name, value: attribs[name] })) : []
-        const nodes = Array.from(walk(originalNodes, htmlNode.children!))
-        yield createNode.element({ tagName, attributes, nodes })
+        const children = Array.from(walk(originalNodes, htmlNode.children!))
+        yield createNode.element({ tagName, attributes, children })
         break
       }
       case 'directive': {
@@ -46,22 +46,22 @@ function* walk(originalNodes: IrisNode[], htmlNodes: HTMLNode[]): IterableIterat
 }
 
 export function extractElementsFrom(node: IrisNode): IrisNode {
-  if (node.nodes == null) return node
-  const originalNodes: IrisNode[] = node.nodes.map(extractElementsFrom)
+  if (node.children == null) return node
+  const originalNodes: IrisNode[] = node.children.map(extractElementsFrom)
   const html: string = originalNodes.reduce((html, node, index) => html + htmlOf(node, index), '')
   const parsedHTML = parseHTML(html)
-  const nodes = Array.from(walk(originalNodes, parsedHTML))
+  const children = Array.from(walk(originalNodes, parsedHTML))
 
   // Yuck
-  if (nodes.length < originalNodes.length && html.slice(0, 1) === '>') {
-    nodes.unshift(createNode.text({ raw: '">"' }))
+  if (children.length < originalNodes.length && html.slice(0, 1) === '>') {
+    children.unshift(createNode.text({ raw: '">"' }))
   }
 
-  if (nodes.length < originalNodes.length && html.slice(-2) === '>>') {
-    nodes.push(createNode.text({ raw: '">"' }))
+  if (children.length < originalNodes.length && html.slice(-2) === '>>') {
+    children.push(createNode.text({ raw: '">"' }))
   }
 
-  return { ...node, nodes } as any
+  return { ...node, children } as any
 }
 
 
@@ -77,10 +77,10 @@ export function parseString(template: string, partials: PartialTemplateStrings =
   const partialTemplates = Object.keys(partials).map(name =>
     createNode.partialTemplate({
       name,
-      nodes: parseTemplate(partials[name], true, partialNames)
+      children: parseTemplate(partials[name], true, partialNames)
     }))
 
-  const nodes = parseTemplate(template, false, partialNames)
+  const children = parseTemplate(template, false, partialNames)
 
-  return createNode.rootTemplate({ partialTemplates, nodes })
+  return createNode.rootTemplate({ partialTemplates, children })
 }

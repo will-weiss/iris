@@ -29,7 +29,7 @@ interface IrisAnyNode {
   partialTemplate: null
   rootTemplate: null
   path: null
-  nodes: null
+  children: null
 }
 
 type IrisNewlineNode = {
@@ -44,7 +44,7 @@ type IrisNewlineNode = {
   partialTemplate: null
   rootTemplate: null
   path: null
-  nodes: null
+  children: null
 }
 
 type IrisLinestartNode = {
@@ -59,7 +59,7 @@ type IrisLinestartNode = {
   partialTemplate: null
   rootTemplate: null
   path: null
-  nodes: null
+  children: null
 }
 
 type IrisTextNode = { 
@@ -74,7 +74,7 @@ type IrisTextNode = {
   partialTemplate: null
   rootTemplate: null
   path: null
-  nodes: null
+  children: null
 }
 
 type IrisPartialRefNode = { 
@@ -89,7 +89,7 @@ type IrisPartialRefNode = {
   partialTemplate: null
   rootTemplate: null
   path: null
-  nodes: null
+  children: null
 }
 
 type IrisVariableNode = {
@@ -104,7 +104,7 @@ type IrisVariableNode = {
   partialTemplate: null
   rootTemplate: null
   path: { raw: string, keys: string[] }
-  nodes: null
+  children: null
 }
 
 type IrisSectionNode = { 
@@ -119,7 +119,7 @@ type IrisSectionNode = {
   partialTemplate: null
   rootTemplate: null
   path: { raw: string, keys: string[] }
-  nodes: IrisNode[]
+  children: IrisNode[]
 }
 
 type IrisElementNode = { 
@@ -134,7 +134,7 @@ type IrisElementNode = {
   partialTemplate: null
   rootTemplate: null
   path: null
-  nodes: IrisNode[]
+  children: IrisNode[]
 }
 
 type IrisPartialTemplateNode = { 
@@ -149,7 +149,7 @@ type IrisPartialTemplateNode = {
   partialTemplate: { name: string }
   rootTemplate: null
   path: null
-  nodes: IrisNode[]
+  children: IrisNode[]
 }
 
 type IrisRootTemplateNode = { 
@@ -164,7 +164,7 @@ type IrisRootTemplateNode = {
   partialTemplate: null
   rootTemplate: { partialTemplates: IrisPartialTemplateNode[] }
   path: null
-  nodes: IrisNode[]
+  children: IrisNode[]
 }
 
 type IrisNonTemplateNode =

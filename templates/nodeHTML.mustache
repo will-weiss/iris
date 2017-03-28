@@ -49,17 +49,17 @@
       var cursor;
       var context = data && typeof data === 'object' ? Object.assign(Object.create(this), data) : this;
 
-      {{#nodes}}
+      {{#children}}
         {{> nodeHTML}}
-      {{/nodes}}
+      {{/children}}
     }, context)
   {{/inverted}}
   {{#inverted}}
     ((function() {
       if (!cursor || cursor.length === 0) {
-        {{#nodes}}
+        {{#children}}
           {{> nodeHTML}}
-        {{/nodes}}
+        {{/children}}
       }
     })())
   {{/inverted}}
@@ -75,9 +75,9 @@
 {{#element}}
 parent.appendChild((function() {
   var parent = document.createElement("{{{tagName}}}");
-  {{#nodes}}
+  {{#children}}
     {{> nodeHTML}}
-  {{/nodes}}
+  {{/children}}
   return parent;
 })());
 {{/element}}
@@ -87,9 +87,9 @@ function {{{name}}}(data, indentation) {
   var cursor;
   var context = data;
 
-  {{#nodes}}
+  {{#children}}
     {{> nodeHTML}}
-  {{/nodes}}
+  {{/children}}
 }
 {{/partialTemplate}}
 
@@ -99,9 +99,9 @@ function(data) {
   var context = data;
   var parent = document.createDocumentFragment();
 
-  {{#nodes}}
+  {{#children}}
     {{> nodeHTML}}
-  {{/nodes}}
+  {{/children}}
 
   return parent;
 

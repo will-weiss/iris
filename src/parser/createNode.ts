@@ -9,7 +9,7 @@ const irisNodeProto = {
   partialTemplate: null,
   rootTemplate: null,
   path: null,
-  nodes: null,
+  children: null,
 }
 
 
@@ -33,18 +33,18 @@ export function variable({ path, unescaped = false }: { path: string, unescaped?
   return { ...irisNodeProto, tag: 'variable', path: { raw: path, keys: keys(path) }, variable: { unescaped } }
 }
 
-export function section({ path, nodes = [], inverted = false }: { path: string, nodes?: IrisNode[], inverted?: boolean }): IrisSectionNode {
-  return { ...irisNodeProto, tag: 'section', path: { raw: path, keys: keys(path) }, section: { inverted }, nodes }
+export function section({ path, children = [], inverted = false }: { path: string, children?: IrisNode[], inverted?: boolean }): IrisSectionNode {
+  return { ...irisNodeProto, tag: 'section', path: { raw: path, keys: keys(path) }, section: { inverted }, children }
 }
 
-export function element({ tagName, nodes = [], attributes = [] }: { tagName: string, attributes?: any[], nodes?: IrisNode[] }): IrisElementNode {
-  return { ...irisNodeProto, tag: 'element', element: { tagName, attributes }, nodes }
+export function element({ tagName, children = [], attributes = [] }: { tagName: string, attributes?: any[], children?: IrisNode[] }): IrisElementNode {
+  return { ...irisNodeProto, tag: 'element', element: { tagName, attributes }, children }
 }
 
-export function partialTemplate({ name, nodes = [] }: { name: string, nodes?: IrisNode[] }): IrisPartialTemplateNode {
-  return { ...irisNodeProto, tag: 'partialTemplate', partialTemplate: { name }, nodes }
+export function partialTemplate({ name, children = [] }: { name: string, children?: IrisNode[] }): IrisPartialTemplateNode {
+  return { ...irisNodeProto, tag: 'partialTemplate', partialTemplate: { name }, children }
 }
 
-export function rootTemplate({ nodes = [], partialTemplates = [] }: { nodes?: IrisNode[], partialTemplates?: IrisPartialTemplateNode[], }): IrisRootTemplateNode {
-  return { ...irisNodeProto, tag: 'rootTemplate', nodes, rootTemplate: { partialTemplates } }
+export function rootTemplate({ children = [], partialTemplates = [] }: { children?: IrisNode[], partialTemplates?: IrisPartialTemplateNode[], }): IrisRootTemplateNode {
+  return { ...irisNodeProto, tag: 'rootTemplate', children, rootTemplate: { partialTemplates } }
 }
