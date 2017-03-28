@@ -8,6 +8,9 @@ function htmlOf(node: IrisNode, index: number): string {
     case 'text':
       return node.text.raw
 
+    case 'variable':
+      return `@@@iris-${index}@@@`
+
     default:
       return `<!–– iris: ${index} -->`
   }
@@ -17,13 +20,33 @@ function* walk(originalChildren: IrisNode[], htmlNodes: HTMLNode[]): IterableIte
   for (const htmlNode of htmlNodes) {
     switch (htmlNode.type) {
       case 'text': {
-        yield createNode.text({ raw: htmlNode.raw })
+
+        const texts = htmlNode.raw.split('@@@').filter(text => text)
+
+        console.log(texts)
+
+        yield * texts.map(text => {
+          const match = text.match(/^iris-(\d+)$/)
+          if (!match) return createNode.text({ raw: text })
+          const id = Number(match[1])
+          return originalChildren[id]
+        })
+
         break
       }
       case 'tag': {
         const { name: tagName, attribs } = htmlNode
-        const attributes = attribs ? Object.keys(attribs).map(name => ({ name, value: attribs[name] })) : []
         const children = Array.from(walk(originalChildren, htmlNode.children!))
+        const attributes = attribs
+          ? Object.keys(attribs).map(name => {
+              const value = attribs[name]
+              const match = value.match(/^@@@iris-(\d+)@@@$/)
+              if (!match) return ({ name, static: { value: JSON.stringify(value) } })
+              const id = Number(match[1])
+              const variableNode = originalChildren[id] as IrisVariableNode
+              return ({ name, path: variableNode.path })
+            })
+          : []
         yield createNode.element({ tagName, attributes, children })
         break
       }
@@ -45,7 +68,11 @@ export function extractElementsFrom(node: IrisNode): IrisNode {
 
   const html: string = originalChildren.reduce((html, node, index) => html + htmlOf(node, index), '')
 
+  console.log(html)
+
   const parsedHTML = parseHTML(html)
+
+  console.log(parsedHTML[1])
 
   const children = Array.from(walk(originalChildren, parsedHTML))
 

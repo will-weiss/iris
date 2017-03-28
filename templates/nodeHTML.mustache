@@ -75,6 +75,17 @@
 {{#element}}
 parent.appendChild((function() {
   var parent = document.createElement("{{{tagName}}}");
+
+  {{#attributes}}
+    {{#static}}
+      parent["{{{name}}}"] = {{{value}}};
+    {{/static}}
+    {{#path}}
+      {{> moveCursor}}
+      parent["{{{name}}}"] = cursor;
+    {{/path}}
+  {{/attributes}}
+
   {{#children}}
     {{> nodeHTML}}
   {{/children}}
