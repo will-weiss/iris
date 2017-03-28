@@ -6,7 +6,7 @@ import { irisToDOM } from '../index'
 
 
 
-describe.only('toDOM', () => {
+describe('toDOM', () => {
   it('works', () => {
     const { document } = jsdom('<html><body></body></html>').defaultView
 
