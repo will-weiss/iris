@@ -1,59 +1,34 @@
 import { expect } from 'chai'
 import { jsdom } from 'jsdom'
 import { Script } from 'vm'
-import { irisToDOM, irisToString } from '../index'
-const htmlparser = require('htmlparser')
+import { irisToDOM } from '../index'
+
+
 
 
 describe('toDOM', () => {
-  it('works', async () => {
-
-    const template = `
-      <div>
-        <h3>{{text}}</h3>
-        <button>
-          Click Me!
-        </button>
-      </div>
-    `
-
-    const data = {
-      text: 'In the header!'
-    }
-
-    // const templatizedFunction = (new Function(`return `))()
+  it('works', () => {
     const { document } = jsdom('<html><body></body></html>').defaultView
-    const script = new Script(`document.body.appendChild((${irisToDOM(template)})(data))`)
-    const context: any = { document, data }
-    script.runInNewContext(context)
 
-    expect(document.body.innerHTML.trim()).to.equal('<div><h3>In the header!</h3><button>Click Me!</button></div>')
-  })
-
-  it.skip('really works', async () => {
-
-    const template = `
-      <div>
-        <h3>{{text}}</h3>
-        <button onclick={{handleClick}}>
-          Click Me!
-        </button>
-      </div>
-    `
+    const template = `<h3>Hello {{name}}!</h3><button onclick={{handleClick}}>Click Me!</button>`
 
     const data = {
-      text: 'In the header!',
+      name: 'Jimbo',
       handleClick() {
-        document.body.innerHTML = 'Replaced because of click!'
+        this.innerHTML = 'Clicked!'
       }
     }
 
-    const templatizedFunction = (new Function(`return ${irisToDOM(template)}`))()
-    const { document } = jsdom('<html><body></body></html>').defaultView
-    const script = new Script(`document.body.appendChild(templatizedFunction(data))`)
-    const context: any = { document, data, templatizedFunction }
+    const scriptCode = `document.body.appendChild((${irisToDOM(template)})(data))`
+    const script = new Script(scriptCode)
+    const context: any = { document, data }
+
     script.runInNewContext(context)
 
-    expect(document.body.innerHTML.trim()).to.equal('<div><h3>In the header!</h3><button>Click Me!</button></div>')
+    expect(document.body).to.have.property('innerHTML', `<h3>Hello Jimbo!</h3><button>Click Me!</button>`)
+
+    document.querySelector('button')!.click()
+
+    expect(document.body).to.have.property('innerHTML', `<h3>Hello Jimbo!</h3><button>Clicked!</button>`)
   })
 })

@@ -82,7 +82,7 @@ function(context) {
   * node.js + typescript
   * mocha + chai + sinon
   * hogan.js for scanning + parsing
-  * mustache.js for test suite
+  * mustache/spec for test suite
 
 * Testability
   * Passes mustache.js test suite
@@ -110,22 +110,40 @@ function(context) {
 * Minification
 
 
-## Initial Plan
+# TODO
 
-1. Initial commit
-1. Create harnesses to run against mustache test suite
-1. Compile static templates
-1. Compile comment tags
-1. Compile variable tags for non-nested object contexts and falsy values
-1. Compile escaped variable tags for non-nested object contexts and falsy values
-1. Compile section tags for falsy values including empty lists
-1. Compile section tags for non-empty lists
-1. Compile section tags for non-falsy, non-list, non-callable values
-1. Compile section tags for callable values
-1. Compile inverted section tags
-1. Compile partial tags
-1. Compile set delimeter tags
-1. Access context properties recursively
-1. Allow objects/functions to be added as element attributes using variable tags
-1. Can compile to static div
-1. Can compile to div with variable
+- [x] Initial commit
+- [x] Create harnesses to run against mustache test suite
+- [x] Compile static templates
+- [x] Compile comment tags
+- [x] Compile variable tags for non-nested object contexts and falsy values
+- [x] Compile escaped variable tags for non-nested object contexts and falsy values
+- [x] Compile section tags for falsy values including empty lists
+- [x] Compile section tags for non-empty lists
+- [x] Compile section tags for non-falsy, non-list, non-callable values
+- [x] Compile section tags for callable values
+- [x] Compile inverted section tags
+- [x] Compile partial tags
+- [x] Compile set delimeter tags
+- [x] Access context properties recursively
+- [x] Allow objects/functions to be added as element attributes using variable tags
+- [x] Compile to static div
+- [x] Compile to div with variable
+- [ ] Differentiate between quoted and unquoted element attributes
+- [ ] Recursively parse HTML attributes
+- [ ] Strip HTML comments
+- [ ] Handle HTML directives
+- [ ] Handle self-closing tags
+- [ ] Unify templates where possible
+- [ ] Optionally strip extraneous whitespace when compiling for the DOM
+- [ ] Strict mode throws errors when a variable is undefined
+- [ ] Minify using Google Closure
+- [ ] CLI
+
+
+# Open Questions
+
+- Lambdas?
+- TS definitions?
+- What are common errors/warnings to alert on?
+- Exact behavior of attributes?

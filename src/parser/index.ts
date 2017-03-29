@@ -1,70 +1,100 @@
-const Hogan = require('hogan.js')
 import * as createNode from './createNode'
-import { map, compact } from '../generators'
+import parseTemplate, { hoganNodesOf } from './parseTemplate'
+import parseHTML from './parseHTML'
 
 
-function mustacheParser(template: string): HoganParsedNode[] {
-  return Hogan.parse(Hogan.scan(template))
-}
-
-const keys = (str: string) => str === '.' ? [] : str.split('.')
-
-
-const fromHogan = (ofPartial: boolean, partialNames: Set<string>) => (node: HoganParsedNode): IrisNonTemplateNode | undefined => {
+function htmlOf(node: IrisNode, index: number): string {
   switch (node.tag) {
-    case '\n':
-      return createNode.newline
+    case 'text':
+      return node.text.raw
 
-    case '_t':
-      return createNode.text(JSON.stringify('' + node.text))
+    case 'variable':
+      return `@@@iris-${index}@@@`
 
-    case '>':
-      return partialNames.has(node.n) ? createNode.partialRef(node.n, node.indent || '') : undefined
-
-    case '#': case '^':
-      return createNode.section(keys(node.n), node.tag !== '#', interpreter(node.nodes, ofPartial, partialNames))
-
-    case '&': case '{': case '_v':
-      return createNode.variable(keys(node.n), node.tag === '_v')
+    default:
+      return `<!–– iris: ${index} -->`
   }
 }
 
+function* walk(originalChildren: IrisNode[], htmlNodes: HTMLNode[]): IterableIterator<IrisNode> {
+  for (const htmlNode of htmlNodes) {
+    switch (htmlNode.type) {
+      case 'text': {
+        for (const text of htmlNode.raw.split('@@@')) {
+          if (!text) continue
+          const match = text.match(/^iris-(\d+)$/)
+          yield match
+            ? originalChildren[Number(match[1])]
+            : createNode.text({ raw: text })
+        }
 
-function* lines(hoganNodes: HoganParsedNode[], ofPartial: boolean, partialNames: Set<string>): IterableIterator<IrisNonTemplateNode> {
-  const line: IrisNonTemplateNode[] = []
-
-  for (const node of compact(map(hoganNodes, fromHogan(ofPartial, partialNames)))) {
-    line.push(node)
-
-    if (node.newline) {
-      if (ofPartial) yield createNode.linestart
-      yield * line
-      line.length = 0
+        break
+      }
+      case 'tag': {
+        const { name: tagName, attribs } = htmlNode
+        const children = Array.from(walk(originalChildren, htmlNode.children!))
+        const attributes = attribs
+          ? Object.keys(attribs).map(name => {
+              const value = attribs[name]
+              const match = value.match(/^@@@iris-(\d+)@@@$/)
+              if (!match) return ({ name, static: { value: JSON.stringify(value) } })
+              const id = Number(match[1])
+              const variableNode = originalChildren[id] as IrisVariableNode
+              return ({ name, path: variableNode.path })
+            })
+          : []
+        yield createNode.element({ tagName, attributes, children })
+        break
+      }
+      case 'directive': {
+        const match = htmlNode.data.match(/iris: (\d+)/)
+        if (match) {
+          const id = Number(match[1])
+          yield originalChildren[id]
+        }
+      }
     }
   }
+}
 
-  if (line.length) {
-    if (ofPartial) yield createNode.linestart
-    yield * line
+export function extractElementsFrom(node: IrisNode): IrisNode {
+  if (node.children == null) return node
+
+  const originalChildren: IrisNode[] = node.children.map(extractElementsFrom)
+
+  const html: string = originalChildren.reduce((html, node, index) => html + htmlOf(node, index), '')
+
+  const parsedHTML = parseHTML(html)
+
+  const children = Array.from(walk(originalChildren, parsedHTML))
+
+  // Yuck
+  if (children.length < originalChildren.length && html.slice(0, 1) === '>') {
+    children.unshift(createNode.text({ raw: '>' }))
   }
+
+  if (children.length < originalChildren.length && html.slice(-2) === '>>') {
+    children.push(createNode.text({ raw: '>' }))
+  }
+
+  return { ...node, children } as any
 }
 
-function interpreter(hoganNodes: HoganParsedNode[], ofPartial: boolean, partialNames: Set<string>): IrisNonTemplateNode[] {
-  return Array.from(lines(hoganNodes, ofPartial, partialNames))
+export function parseDOM(template: string, partials: PartialTemplateStrings = {}): IrisRootTemplateNode {
+  const rootTemplate = parseString(template, partials)
+  return extractElementsFrom(rootTemplate) as any
 }
 
-
-function parseTemplate(template: string, ofPartial: boolean, partialNames: Set<string>): IrisNonTemplateNode[] {
-  return interpreter(mustacheParser(template), ofPartial, partialNames)
-}
-
-
-export default function parse(template: string, partials: PartialTemplateStrings = {}): RootTemplateData {
+export function parseString(template: string, partials: PartialTemplateStrings = {}): IrisRootTemplateNode {
   const partialNames = new Set(Object.keys(partials))
 
   const partialTemplates = Object.keys(partials).map(name =>
-    createNode.partialTemplate(name, parseTemplate(partials[name], true, partialNames)))
+    createNode.partialTemplate({
+      name,
+      children: parseTemplate(partials[name], true, partialNames)
+    }))
 
-  return createNode.rootTemplate(partialTemplates, parseTemplate(template, false, partialNames))
+  const children = parseTemplate(template, false, partialNames)
+
+  return createNode.rootTemplate({ partialTemplates, children })
 }
-

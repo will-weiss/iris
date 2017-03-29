@@ -17,44 +17,51 @@
 
 {{! linestart nodes return the indentation level for partial templates }}
 {{#linestart}}
-  indentation
+  parent.appendChild(document.createTextNode(indentation));
 {{/linestart}}
 
 {{! newline nodes return a newline character }}
 {{#newline}}
-  "\n"
+  parent.appendChild(document.createTextNode("\n"));
 {{/newline}}
 
 {{! text nodes return the quoted text value of the node }}
 {{#text}}
-  {{{formatted}}}
+  parent.appendChild(document.createTextNode({{{formatted}}}));
 {{/text}}
 
 {{! partialRef nodes return the result of the compiled function of that partial with the current context }}
 {{#partialRef}}
-  {{{name}}}(context, "{{{indentation}}}")
+  {{{name}}}(context, "{{{indentation}}}");
 {{/partialRef}}
 
 {{! For variable nodes, the cursor is moved to the location of the variable }}
 {{! Then the value of the  }}
 {{#variable}}
-  (cursor == null ? "" : "" + cursor){{^unescaped}}
+  parent.appendChild(document.createTextNode((cursor == null ? "" : "" + cursor){{^unescaped}}
     .replace("&", "&amp;").replace('"', "&quot;").replace("<", "&lt;").replace(">", "&gt;")
-  {{/unescaped}}
+  {{/unescaped}}));
 {{/variable}}
 
 {{#section}}
   {{^inverted}}
-    (Array.isArray(cursor) ? cursor : (cursor ? [cursor] : [])).map(function(data) {
+    (Array.isArray(cursor) ? cursor : (cursor ? [cursor] : [])).forEach(function(data) {
       var cursor;
       var context = data && typeof data === 'object' ? Object.assign(Object.create(this), data) : this;
-      return (""{{#children}} + ({{> node}}){{/children}});
-    }, context).join("")
+
+      {{#children}}
+        {{> nodeHTML}}
+      {{/children}}
+    }, context)
   {{/inverted}}
   {{#inverted}}
-    (!cursor || cursor.length === 0
-      ? (""{{#children}} + ({{> node}}){{/children}})
-      : "")
+    ((function() {
+      if (!cursor || cursor.length === 0) {
+        {{#children}}
+          {{> nodeHTML}}
+        {{/children}}
+      }
+    })())
   {{/inverted}}
 {{/section}}
 
@@ -65,11 +72,35 @@
 {{! Partial templates are named functions of a two arguments: the data and the indentation level }}
 {{! The partial templates of root templates appear in the closure of the compiled root template }}
 
+{{#element}}
+parent.appendChild((function() {
+  var parent = document.createElement("{{{tagName}}}");
+
+  {{#attributes}}
+    {{#static}}
+      parent["{{{name}}}"] = {{{value}}};
+    {{/static}}
+    {{#path}}
+      {{> moveCursor}}
+      parent["{{{name}}}"] = cursor;
+    {{/path}}
+  {{/attributes}}
+
+  {{#children}}
+    {{> nodeHTML}}
+  {{/children}}
+  return parent;
+})());
+{{/element}}
+
 {{#partialTemplate}}
 function {{{name}}}(data, indentation) {
   var cursor;
   var context = data;
-  return (""{{#children}} + ({{> node}}){{/children}});
+
+  {{#children}}
+    {{> nodeHTML}}
+  {{/children}}
 }
 {{/partialTemplate}}
 
@@ -77,10 +108,16 @@ function {{{name}}}(data, indentation) {
 function(data) {
   var cursor;
   var context = data;
-  return (""{{#children}} + ({{> node}}){{/children}});
+  var parent = document.createDocumentFragment();
+
+  {{#children}}
+    {{> nodeHTML}}
+  {{/children}}
+
+  return parent;
 
   {{#partialTemplates}}
-    {{> node}}
+    {{> nodeHTML}}
   {{/partialTemplates}}
 }
 {{/rootTemplate}}
