@@ -16,7 +16,7 @@ function htmlOf(node: IrisNode, index: number): string {
   }
 }
 
-function* walk(originalChildren: IrisNode[], htmlNodes: HTMLNode[]): IterableIterator<IrisNode> {
+function* walk(originalChildren: IrisNode[], htmlNodes: HTMLNode[] = []): IterableIterator<IrisNode> {
   for (const htmlNode of htmlNodes) {
     switch (htmlNode.type) {
       case 'text': {

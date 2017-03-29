@@ -29,22 +29,22 @@ const testCases: ToDOMTestCase[] = [
   },
   {
     description: 'does not coerce attributes that are not enquoted in the template',
-    template: `<input type="number" value={{value}}>`,
+    template: `<input type="number" value={{val}}>`,
     data: {
-      value: 5
+      val: 5
     },
     validateDocument(document) {
-      expect(document.querySelector('input')!.getAttribute('value')).to.equal(5)
+      expect(document.querySelector('input')!.getAttribute('val')).to.equal(5)
     },
   },
   {
     description: 'converts attributes that are enquoted in the template to strings',
-    template: `<input value="{{value}}">`,
+    template: `<input value="{{val}}">`,
     data: {
-      value: 5
+      val: 5
     },
     validateDocument(document) {
-      expect(document.querySelector('input')!.getAttribute('value')).to.equal("5")
+      expect(document.querySelector('input')!.getAttribute('val')).to.equal("5")
     },
   },
   {
