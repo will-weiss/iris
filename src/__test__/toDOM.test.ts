@@ -28,6 +28,26 @@ const testCases: ToDOMTestCase[] = [
     },
   },
   {
+    description: 'does not coerce attributes that are not enquoted in the template',
+    template: `<input type="number" value={{value}}>`,
+    data: {
+      value: 5
+    },
+    validateDocument(document) {
+      expect(document.querySelector('input')!.getAttribute('value')).to.equal(5)
+    },
+  },
+  {
+    description: 'converts attributes that are enquoted in the template to strings',
+    template: `<input value="{{value}}">`,
+    data: {
+      value: 5
+    },
+    validateDocument(document) {
+      expect(document.querySelector('input')!.getAttribute('value')).to.equal("5")
+    },
+  },
+  {
     description: 'handles attributes defined in sections that should be rendered',
     template: `<p {{#hide}}style="display: none;"{{/hide}}>Should be hidden!</p>`,
     data: {
