@@ -20,17 +20,13 @@ function* walk(originalChildren: IrisNode[], htmlNodes: HTMLNode[]): IterableIte
   for (const htmlNode of htmlNodes) {
     switch (htmlNode.type) {
       case 'text': {
-
-        const texts = htmlNode.raw.split('@@@').filter(text => text)
-
-        console.log(texts)
-
-        yield * texts.map(text => {
+        for (const text of htmlNode.raw.split('@@@')) {
+          if (!text) continue
           const match = text.match(/^iris-(\d+)$/)
-          if (!match) return createNode.text({ raw: text })
-          const id = Number(match[1])
-          return originalChildren[id]
-        })
+          yield match
+            ? originalChildren[Number(match[1])]
+            : createNode.text({ raw: text })
+        }
 
         break
       }
@@ -68,11 +64,7 @@ export function extractElementsFrom(node: IrisNode): IrisNode {
 
   const html: string = originalChildren.reduce((html, node, index) => html + htmlOf(node, index), '')
 
-  console.log(html)
-
   const parsedHTML = parseHTML(html)
-
-  console.log(parsedHTML[1])
 
   const children = Array.from(walk(originalChildren, parsedHTML))
 
